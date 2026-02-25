@@ -8,52 +8,78 @@ const stats = [
 
 export default function AboutUs() {
   return (
-    <section className="bg-white py-16 px-6">
-      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-12">
-        {/* Left: Text */}
-        <div className="flex-1">
-          <p className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">About Us</p>
-          <h2 className="text-4xl font-extrabold text-gray-900 leading-tight mb-4">
-            Built on <span className="text-teal-500">Integrity,</span>
-            <br />
-            Bound by <span className="text-teal-500">Trust.</span>
-          </h2>
-          <p className="text-gray-500 text-sm mb-8 max-w-sm">
-            Over four decades of unmatched dedication to safeguarding your lives and assets.
-          </p>
+    <section className="bg-white py-24 px-10 overflow-hidden">
+      {/* CENTERING LOGIC: 
+         - max-w-6xl keeps the section from getting too wide on desktop.
+         - justify-center ensures both halves pull toward the center line.
+      */}
+      <div className="max-w-6xl mx-auto flex flex-col lg:flex-row items-center justify-center gap-12 lg:gap-20">
+        
+        {/* Left Half: Content Aligned to the Right (Center-Center) */}
+        <div className="flex-1 flex justify-center lg:justify-end">
+          <div className="max-w-md w-full">
+            <p className="text-[13px] font-black uppercase tracking-[0.2em] text-[#1a202c] mb-4">
+              About Us
+            </p>
+            <h2 className="text-5xl md:text-6xl font-[900] text-[#2d3748] leading-[1.1] mb-6 tracking-tight">
+              Built on <span className="text-[#009688]">Integrity,</span><br />
+              Bound by <span className="text-[#009688]">Trust.</span>
+            </h2>
+            <p className="text-[#4a5568] text-base mb-10 leading-relaxed opacity-90">
+              Over four decades of unmatched dedication to safeguarding your lives and assets.
+            </p>
 
-          {/* Stats */}
-          <div className="flex gap-8 mb-8">
-            {stats.map((stat, i) => (
-              <div key={stat.label} className={`flex flex-col ${i > 0 ? 'border-l border-gray-200 pl-8' : ''}`}>
-                <span className="text-teal-500 font-extrabold text-xl">{stat.value}</span>
-                <span className="text-gray-500 text-xs mt-1">{stat.label}</span>
-              </div>
-            ))}
+            {/* Stats: Vertical dividers as seen in the UI reference */}
+            <div className="flex gap-8 mb-10">
+              {stats.map((stat, i) => (
+                <div key={stat.label} className="flex gap-4 items-center">
+                  <div className="flex flex-col">
+                    <span className="text-[#009688] font-black text-2xl md:text-3xl leading-none">
+                      {stat.value}
+                    </span>
+                    <span className="text-[#718096] text-[10px] font-bold uppercase tracking-wider mt-2 leading-tight w-20">
+                      {stat.label}
+                    </span>
+                  </div>
+                  {/* Divider line */}
+                  {i < stats.length - 1 && (
+                    <div className="h-10 w-[1.5px] bg-[#009688] opacity-20" />
+                  )}
+                </div>
+              ))}
+            </div>
+
+            <a
+              href="#"
+              className="inline-block bg-[#223a3d] hover:bg-[#1a202c] text-white text-[11px] font-black uppercase tracking-[0.2em] px-12 py-4 transition-all duration-300 shadow-md"
+            >
+              Read More
+            </a>
           </div>
-
-          <a
-            href="#"
-            className="inline-block bg-gray-800 hover:bg-gray-900 text-white text-xs font-bold uppercase tracking-widest px-8 py-3 transition-colors duration-200"
-          >
-            Read More
-          </a>
         </div>
 
-        {/* Right: Guard photo with teal background */}
-        <div className="flex-1 flex justify-center lg:justify-end">
-          <div className="relative w-full max-w-md h-96 bg-teal-400 rounded-lg overflow-hidden flex items-end justify-center">
+        {/* Right Half: Image Aligned to the Left (Center-Center) */}
+        <div className="flex-1 flex justify-center lg:justify-start ml-10">
+          {/* TEAL BOX DESIGN:
+              - aspect-square + max-w-md maintains the square shape.
+              - rounded-[2.5rem] provides the specific curve seen in the image.
+          */}
+          <div className="relative w-full aspect-square max-w-[500px] bg-[#009688] rounded-[2rem] flex items-end justify-center shadow-xl">
+            {/* THE GUARD IMAGE:
+                - h-[108%] makes him taller than the box for the 3D 'pop'.
+                - Removed negative margins to keep him perfectly centered inside the teal area.
+            */}
             <img
               src={guardPhoto}
               alt="Liberty Security Guard"
-              className="h-full w-auto object-contain object-bottom"
+              className="h-[110%] w-auto object-contain object-bottom transform scale-105 drop-shadow-2xl"
             />
           </div>
         </div>
       </div>
 
-      {/* Divider */}
-      <div className="max-w-7xl mx-auto mt-16 border-t border-teal-200" />
+      {/* Footer Branding Line */}
+      <div className="max-w-6xl mx-auto mt-24 border-t-2 border-[#009688] opacity-10" />
     </section>
   )
 }
