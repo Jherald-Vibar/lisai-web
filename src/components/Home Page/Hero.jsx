@@ -11,7 +11,7 @@ export default function Hero() {
       }}
     >
       {/* Aqua Shade Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-r from-teal-900/90 via-teal-70/50 to-transparent z-0 max-w-[75%]" />
+      <div className="absolute inset-0 bg-gradient-to-r from-teal-900/90 via-teal-70/50 to-transparent z-0 max-w-[70%]" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-3 w-full flex justify-start">
         {/* ADJUSTMENT HERE: 

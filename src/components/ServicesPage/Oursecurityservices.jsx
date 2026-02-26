@@ -30,7 +30,7 @@ export default function OurSecurityServices() {
   return (
     <section className="bg-white py-16 px-6">
       <div className="max-w-5xl mx-auto">
-        <p className="text-sm text-gray-500 mb-1">Our Services</p>
+        <p className="text-1xl text-gray-500 mb-1">Our Services</p>
         <h2 className="text-3xl font-bold text-gray-900 mb-2">
           Our Security <span className="text-teal-500">Services</span>
         </h2>
@@ -40,7 +40,7 @@ export default function OurSecurityServices() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {services.map((s) => (
-            <div key={s.title} className="border border-gray-200 rounded-xl p-6 hover:shadow-md transition-shadow duration-200">
+            <div key={s.title} className="border border-gray-400 rounded-xl p-6 hover:shadow-md transition-shadow duration-200">
               <img src={s.icon} alt={s.title} className="w-10 h-10 object-contain mb-4" />
               <h3 className="text-teal-500 font-semibold text-base mb-2">{s.title}</h3>
               <p className="text-gray-500 text-sm leading-relaxed">{s.description}</p>

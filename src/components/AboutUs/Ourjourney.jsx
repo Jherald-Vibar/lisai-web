@@ -28,15 +28,15 @@ const milestones = [
 export default function OurJourney() {
   return (
     <section
-      className="py-20 px-6"
+      className="py-1 px-6"
       style={{
         background: 'linear-gradient(180deg, #ffffff 0%, #b2ede6 40%, #7dd8cf 70%, #b2ede6 100%)',
       }}
     >
-      <div className="max-w-5xl mx-auto">
+      <div className="max-w-5xl mx-auto ">
         {/* Header */}
-        <div className="text-center mb-14">
-          <p className="text-teal-600 text-lg font-semibold mb-2">Our Journey</p>
+        <div className="text-center mb-10">
+          <p className="text-teal-600 text-3xl font-semibold mb-7">Our Journey</p>
           <h2 className="text-5xl font-bold text-teal-900 mb-4">
             Four Decades of Excellence
           </h2>
@@ -47,9 +47,7 @@ export default function OurJourney() {
 
         {/* Timeline */}
         <div className="relative">
-          {/* Connecting line */}
-          <div className="absolute top-6 left-[12.5%] right-[12.5%] h-0.5 bg-teal-300 z-0" />
-
+          
           {/* Cards */}
           <div className="grid grid-cols-4 gap-6 relative z-10">
             {milestones.map((m, i) => (
@@ -65,8 +63,10 @@ export default function OurJourney() {
               </div>
             ))}
           </div>
+          <div className="max-w-7xl mx-auto mt-40 border-t-5 border-[gray] opacity-50" />
         </div>
       </div>
     </section>
+    
   )
 }

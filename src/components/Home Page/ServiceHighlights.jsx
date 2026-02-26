@@ -71,7 +71,7 @@ export default function ServiceHighlights() {
         </div>
 
         {/* 4. FOOTER DIVIDER */}
-        <div className="max-w-7xl mx-auto mt-20 border-t-7 border-[#b2dfdb] opacity-40" />
+        <div className="max-w-7xl mx-auto mt-25 border-t-7 border-[#009688] opacity-40" />
       </section>
     </>
   )

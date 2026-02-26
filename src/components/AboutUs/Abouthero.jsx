@@ -3,7 +3,7 @@ import logo from '../../assets/lisai-logo.png'
 export default function AboutHero() {
   return (
     <section
-      className="relative w-full min-h-[600px] flex items-center overflow-hidden"
+      className="relative w-full min-h-[700px] flex items-center overflow-hidden"
       style={{ backgroundColor: '#050A14' }}
     >
       {/* Hill-shaped teal glow from bottom center */}

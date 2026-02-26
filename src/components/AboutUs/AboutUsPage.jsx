@@ -1,6 +1,6 @@
 import AboutHero from './AboutHero'
-import TheStory from './TheStory'
-import OurJourney from './OurJourney'
+import TheStory from './Thestory'
+import OurJourney from './Ourjourney'
 import IndustriesServed from './IndustriesServed'
 import FAQ from './FAQ'
 
