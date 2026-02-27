@@ -10,6 +10,7 @@ export default function AboutUsPage() {
       <AboutHero />
       <TheStory />
       <OurJourney />
+      <IndustriesServed />
       <FAQ />
     </div>
   )

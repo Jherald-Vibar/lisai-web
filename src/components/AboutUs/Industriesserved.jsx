@@ -17,7 +17,7 @@ export default function IndustriesServed() {
 
         <div className="space-y-2">
           {industries.map((industry) => (
-            <p key={industry} className="text-gray-800 font-bold text-3xl md:text-4xl leading-tight">
+            <p key={industry} className="text-gray-800 font-bold text-2xl sm:text-3xl md:text-4xl leading-tight">
               {industry}
             </p>
           ))}
