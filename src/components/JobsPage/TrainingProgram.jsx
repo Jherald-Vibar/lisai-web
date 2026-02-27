@@ -14,7 +14,7 @@ export default function TrainingProgram() {
       <div className="max-w-5xl mx-auto">
         <p className="text-xs text-gray-400 uppercase tracking-widest mb-6">Our Training Partner</p>
 
-        <div className="grid grid-cols-2 gap-10 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
           {/* Left */}
           <div>
             <div className="flex items-center gap-3 mb-4">
@@ -25,7 +25,7 @@ export default function TrainingProgram() {
               </div>
             </div>
 
-            <h2 className="text-3xl font-extrabold text-teal-600 leading-tight mb-4">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-teal-600 leading-tight mb-4">
               Comprehensive<br />Security Training
             </h2>
 
@@ -51,18 +51,18 @@ export default function TrainingProgram() {
           </div>
 
           {/* Right - dark card */}
-          <div style={{ backgroundColor: '#111827', borderRadius: '12px', padding: '32px', color: 'white' }}>
+          <div style={{ backgroundColor: '#111827', borderRadius: '12px', padding: '28px', color: 'white' }}>
             <p style={{ color: '#2dd4bf', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '12px' }}>
               Enroll Now · Limited Slots
             </p>
-            <h3 style={{ fontSize: '22px', fontWeight: '800', textTransform: 'uppercase', lineHeight: '1.2', marginBottom: '6px' }}>
+            <h3 style={{ fontSize: '20px', fontWeight: '800', textTransform: 'uppercase', lineHeight: '1.2', marginBottom: '6px' }}>
               Security Guard<br />Training Program
             </h3>
             <p style={{ color: '#2dd4bf', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', marginBottom: '24px' }}>
               Palacio Security Training Academy Inc.
             </p>
 
-            <div style={{ marginBottom: '32px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div style={{ marginBottom: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <div>
                 <p style={{ color: '#9ca3af', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '4px' }}>Schedule</p>
                 <p style={{ color: '#e5e7eb', fontSize: '13px' }}>Batches run regularly — Inquire for next available date</p>
