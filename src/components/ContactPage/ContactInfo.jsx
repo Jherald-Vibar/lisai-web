@@ -8,7 +8,7 @@ export default function ContactInfo() {
   const sendEmail = (e) => {
     e.preventDefault();
     emailjs
-      .sendForm("service_l5tzziw", "template_9b0ekwt", formRef.current, "PjuCjthlPhvNW1EMA")
+      .sendForm("service_kney65d", "template_zte5i96", formRef.current, "0MzGZwWBlw4Dfb0vB")
       .then(
         () => { setStatus("success"); formRef.current.reset(); },
         () => { setStatus("error"); }
@@ -34,7 +34,7 @@ export default function ContactInfo() {
       title: 'Phone',
       lines: ['0917 638 1250', '(+632) 8364 0165'],
 
-    
+
     },
     {
       icon: (
@@ -183,9 +183,8 @@ export default function ContactInfo() {
               <button
                 type="submit"
                 disabled={status === "sending"}
-                className={`w-full py-3 rounded-lg font-semibold text-sm tracking-wide transition ${
-                  status === "sending" ? "bg-teal-500 cursor-not-allowed" : "bg-teal-700 hover:bg-teal-800"
-                } text-white`}
+                className={`w-full py-3 rounded-lg font-semibold text-sm tracking-wide transition ${status === "sending" ? "bg-teal-500 cursor-not-allowed" : "bg-teal-700 hover:bg-teal-800"
+                  } text-white`}
               >
                 {status === "sending" ? "Sending..." : "SEND MESSAGE"}
               </button>
