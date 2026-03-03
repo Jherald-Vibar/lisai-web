@@ -1,27 +1,30 @@
+import { useNavigate } from 'react-router-dom'
 import guard1 from '../../assets/guard_1.png'
 
 const positions = [
   {
     image: guard1,
     title: 'Security Guard',
-    description: 'Responsible for protecting client premises, conducting patrols, monitoring surveillance equipment, and maintaining order at assigned posts.',
-    tags: ['Full-Time', 'Benefits & Bonuses', 'SOSIA Accredited'],
+    description: 'Open to both male and female applicants. Responsible for protecting client premises, conducting patrols, monitoring surveillance equipment, and maintaining order at assigned posts.',
+    tags: ['Male & Female', 'Full-Time', 'Benefits & Bonuses', 'SOSIA Accredited'],
   },
   {
     image: guard1,
-    title: 'Security Guard',
-    description: 'Responsible for protecting client premises, conducting patrols, monitoring surveillance equipment, and maintaining order at assigned posts.',
-    tags: ['Full-Time', 'Benefits & Bonuses', 'SOSIA Accredited'],
+    title: 'Officer in Charge',
+    description: 'Oversees security operations at assigned sites, coordinates with client representatives, and ensures all guards are properly deployed and performing their duties.',
+    tags: ['Full-Time', 'Leadership Role', 'Benefits & Bonuses'],
   },
   {
     image: guard1,
-    title: 'Security Guard',
-    description: 'Responsible for protecting client premises, conducting patrols, monitoring surveillance equipment, and maintaining order at assigned posts.',
-    tags: ['Full-Time', 'Benefits & Bonuses', 'SOSIA Accredited'],
+    title: 'Shift in Charge',
+    description: 'Supervises a team of security guards during an assigned shift, conducts inspections, submits incident reports, and ensures post orders are followed at all times.',
+    tags: ['Full-Time', 'Supervisory Role', 'Benefits & Bonuses'],
   },
 ]
 
 export default function OpenPositions() {
+  const navigate = useNavigate()
+
   return (
     <section className="bg-white py-16 px-6">
       <div className="max-w-5xl mx-auto">
@@ -40,12 +43,6 @@ export default function OpenPositions() {
               key={i}
               style={{ border: '1px solid #e5e7eb', borderRadius: '12px', padding: '20px', display: 'flex', flexDirection: 'column', background: 'white' }}
             >
-              {/* Red tag bar */}
-              <div style={{ width: '100%', height: '32px', backgroundColor: '#fee2e2', borderRadius: '8px', marginBottom: '16px', display: 'flex', alignItems: 'center', paddingLeft: '12px' }}>
-                <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#f87171', display: 'inline-block' }} />
-              </div>
-
-              {/* Image box */}
               <div style={{ width: '64px', height: '64px', borderRadius: '8px', backgroundColor: '#ccfbf1', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px' }}>
                 <img src={pos.image} alt={pos.title} style={{ width: '40px', height: '40px', objectFit: 'contain' }} />
               </div>
@@ -61,7 +58,10 @@ export default function OpenPositions() {
                 ))}
               </div>
 
-              <button style={{ color: '#0f766e', fontSize: '12px', fontWeight: '700', textAlign: 'left', letterSpacing: '0.05em', background: 'none', border: 'none', cursor: 'pointer' }}>
+              <button
+                onClick={() => navigate(`/apply/${encodeURIComponent(pos.title)}`)}
+                style={{ color: '#0f766e', fontSize: '12px', fontWeight: '700', textAlign: 'left', letterSpacing: '0.05em', background: 'none', border: 'none', cursor: 'pointer' }}
+              >
                 APPLY FOR THIS ROLE →
               </button>
             </div>

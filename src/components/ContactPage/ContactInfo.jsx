@@ -1,19 +1,78 @@
 import emailjs from "@emailjs/browser";
 import { useRef, useState } from "react";
 
+function FieldError({ message }) {
+  if (!message) return null
+  return <p className="text-red-500 text-xs mt-1">{message}</p>
+}
+
 export default function ContactInfo() {
   const formRef = useRef();
   const [status, setStatus] = useState("idle");
 
-  const sendEmail = (e) => {
-    e.preventDefault();
+  const [fields, setFields] = useState({
+    full_name: '',
+    email: '',
+    phone: '',
+    company: '',
+    message: '',
+  })
+  const [errors, setErrors] = useState({})
+
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    setFields((prev) => ({ ...prev, [name]: value }))
+    setErrors((prev) => ({ ...prev, [name]: null }))
+  }
+
+  const validate = () => {
+    const newErrors = {}
+
+    if (!fields.full_name.trim()) newErrors.full_name = 'Name is required.'
+
+    if (!fields.email.trim()) {
+      newErrors.email = 'Email address is required.'
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email)) {
+      newErrors.email = 'Enter a valid email address.'
+    }
+
+    if (!fields.phone.trim()) {
+      newErrors.phone = 'Phone number is required.'
+    } else if (!/^(09|\+639|\+632|0[2-9])\d{7,9}$/.test(fields.phone.replace(/[\s\-]/g, ''))) {
+      newErrors.phone = 'Enter a valid PH number (e.g. 09XX XXX XXXX or (+632) XXXX XXXX).'
+    }
+
+    if (!fields.message.trim()) newErrors.message = 'Please enter your message.'
+
+    return newErrors
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    const newErrors = validate()
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors)
+      const firstKey = Object.keys(newErrors)[0]
+      const el = document.querySelector(`[name="${firstKey}"]`)
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      return
+    }
+
+    setStatus("sending")
     emailjs
       .sendForm("service_l5tzziw", "template_9b0ekwt", formRef.current, "PjuCjthlPhvNW1EMA")
       .then(
-        () => { setStatus("success"); formRef.current.reset(); },
-        () => { setStatus("error"); }
-      );
-  };
+        () => { setStatus("success"); formRef.current.reset(); setFields({ full_name: '', email: '', phone: '', company: '', message: '' }) },
+        () => { setStatus("error") }
+      )
+  }
+
+  const inputClass = (name) =>
+    `w-full border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 transition ${
+      errors[name]
+        ? 'border-red-400 focus:ring-red-400'
+        : 'border-gray-300 focus:ring-teal-600 focus:border-teal-600'
+    }`
 
   const infoCards = [
     {
@@ -23,7 +82,7 @@ export default function ContactInfo() {
         </svg>
       ),
       title: 'Head Office',
-      lines: ['Suite 302, Eleongsing Bldg, 440 Rizal Ave Ext, Grace Park East, Caloocan, 1400 Metro Manila'],
+      lines: ['Suite 302 Blessingking Bldg,', '440 Rizal Ave Ext, Bet. 9th & 10th Ave,', 'East Grace Park, Caloocan, Metro Manila'],
     },
     {
       icon: (
@@ -32,9 +91,7 @@ export default function ContactInfo() {
         </svg>
       ),
       title: 'Phone',
-      lines: ['0917 638 1250', '(+632) 8364 0165'],
-
-    
+      lines: ['0917-6381250', '(+632) 83040195', '(+632) 73667875'],
     },
     {
       icon: (
@@ -43,7 +100,7 @@ export default function ContactInfo() {
         </svg>
       ),
       title: 'Email',
-      lines: ['admin@libertysecurityph.com', 'libertyinvestigation_inc@yahoo.com'],
+      lines: ['alibertylnvestigation_inc@yahoo.com', 'libertyinvestigation_inc@yahoo.com'],
     },
     {
       icon: (
@@ -56,19 +113,10 @@ export default function ContactInfo() {
     },
   ]
 
-  const topics = [
-    'Security Guard Services',
-    'Personal Protection',
-    'Event Security',
-    'Training Programs',
-    'General Inquiry',
-  ]
-
   return (
-    <section className="bg-white py-16 sm:py-20 px-4 sm:px-6">
+    <section id="contact-info" className="bg-white py-16 sm:py-20 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
 
-        {/* Section Header */}
         <div className="mb-10">
           <p className="text-sm text-gray-500 mb-2">Contact Information</p>
           <h2 className="text-2xl sm:text-3xl font-bold text-teal-700 mb-3">
@@ -80,12 +128,10 @@ export default function ContactInfo() {
           </p>
         </div>
 
-        {/* Grid — stacks on mobile, side by side on lg */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
 
           {/* LEFT: info cards + map */}
           <div className="space-y-4">
-            {/* Info cards — 2 col on sm, 1 col on mobile */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {infoCards.map((card) => (
                 <div key={card.title} className="flex gap-3 border border-gray-200 rounded-xl p-4">
@@ -101,8 +147,6 @@ export default function ContactInfo() {
                 </div>
               ))}
             </div>
-
-            {/* Map */}
             <div className="rounded-xl overflow-hidden border border-gray-200 w-full">
               <iframe
                 title="LISAI Office Location"
@@ -123,61 +167,78 @@ export default function ContactInfo() {
               Inquire here by filling up the details below.
             </p>
 
-            <form ref={formRef} onSubmit={sendEmail} className="space-y-4">
+            <form ref={formRef} onSubmit={handleSubmit} noValidate className="space-y-4">
+
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Name <span className="text-red-400">*</span>
+                </label>
                 <input
                   name="full_name"
-                  required
+                  value={fields.full_name}
+                  onChange={handleChange}
                   placeholder="Juan Dela Cruz"
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-teal-600 transition"
+                  className={inputClass('full_name')}
                 />
+                <FieldError message={errors.full_name} />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Email Address <span className="text-red-400">*</span>
+                </label>
                 <input
                   name="email"
                   type="email"
-                  required
+                  value={fields.email}
+                  onChange={handleChange}
                   placeholder="juan@email.com"
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-teal-600 transition"
+                  className={inputClass('email')}
                 />
+                <FieldError message={errors.email} />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Topic / Service</label>
-                <select
-                  name="topic"
-                  required
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-teal-600 transition"
-                >
-                  <option value="">Select a Service</option>
-                  {topics.map((t) => (
-                    <option key={t} value={t}>{t}</option>
-                  ))}
-                </select>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Phone / Telephone <span className="text-red-400">*</span>
+                </label>
+                <input
+                  name="phone"
+                  type="tel"
+                  value={fields.phone}
+                  onChange={handleChange}
+                  placeholder="09XX XXX XXXX or (+632) XXXX XXXX"
+                  className={inputClass('phone')}
+                />
+                <FieldError message={errors.phone} />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Company / Organization</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Company / Organization <span className="text-gray-300 text-xs font-normal">(optional)</span>
+                </label>
                 <input
                   name="company"
-                  required
+                  value={fields.company}
+                  onChange={handleChange}
                   placeholder="Your company name"
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-teal-600 transition"
+                  className={inputClass('company')}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Message <span className="text-red-400">*</span>
+                </label>
                 <textarea
                   name="message"
-                  required
+                  value={fields.message}
+                  onChange={handleChange}
                   rows={4}
                   placeholder="Tell us about your security needs..."
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-teal-600 transition"
+                  className={`${inputClass('message')} resize-none`}
                 />
+                <FieldError message={errors.message} />
               </div>
 
               <button
@@ -205,5 +266,5 @@ export default function ContactInfo() {
         </div>
       </div>
     </section>
-  );
+  )
 }

@@ -1,4 +1,5 @@
 import palacioLogo from '../../assets/palacio-security-logo.jpg'
+import { useNavigate } from 'react-router-dom'
 
 const curriculum = [
   'The Role of Security Officers',
@@ -9,10 +10,12 @@ const curriculum = [
 ]
 
 export default function TrainingProgram() {
+  const navigate = useNavigate()
+
   return (
     <section className="bg-gray-50 py-16 px-6">
       <div className="max-w-5xl mx-auto">
-        <p className="text-xs text-gray-500 uppercase tracking-widest mb-6">Our Training Partner</p>
+        <p className="text-xs text-gray-400 uppercase tracking-widest mb-6">Our Training Partner</p>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
           {/* Left */}
@@ -21,7 +24,7 @@ export default function TrainingProgram() {
               <img src={palacioLogo} alt="Palacio Logo" className="w-10 h-10 object-contain" />
               <div>
                 <p className="font-semibold text-gray-800 text-sm">Palacio Security Training Academy Inc.</p>
-                <p className="text-xs text-gray-500">Sister Company of LISAI</p>
+                <p className="text-xs text-gray-400">Sister Company of LISAI</p>
               </div>
             </div>
 
@@ -78,10 +81,18 @@ export default function TrainingProgram() {
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <button style={{ width: '100%', backgroundColor: '#0f766e', color: 'white', fontSize: '13px', fontWeight: '600', padding: '10px', borderRadius: '6px', border: 'none', cursor: 'pointer' }}>
+              <a
+                href="https://www.facebook.com/lisai86"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ display: 'block', width: '100%', backgroundColor: '#0f766e', color: 'white', fontSize: '13px', fontWeight: '600', padding: '10px', borderRadius: '6px', textAlign: 'center', textDecoration: 'none' }}
+              >
                 Learn More on Facebook
-              </button>
-              <button style={{ width: '100%', backgroundColor: 'transparent', color: 'white', fontSize: '13px', fontWeight: '600', padding: '10px', borderRadius: '6px', border: '1px solid #6b7280', cursor: 'pointer' }}>
+              </a>
+              <button
+                onClick={() => navigate('/apply/General%20Application')}
+                style={{ width: '100%', backgroundColor: 'transparent', color: 'white', fontSize: '13px', fontWeight: '600', padding: '10px', borderRadius: '6px', border: '1px solid #6b7280', cursor: 'pointer' }}
+              >
                 Apply for a Position
               </button>
             </div>
