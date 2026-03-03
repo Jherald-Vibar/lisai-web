@@ -1,6 +1,10 @@
+import { useNavigate } from 'react-router-dom';
 import heroBg from '../../assets/Hero-BG-LISAI-Guard.png'
 
+
 export default function Hero() {
+ const navigate = useNavigate()
+
   return (
     <section
       className="relative w-full h-screen min-h-[600px] flex items-end lg:items-center overflow-hidden"
@@ -55,12 +59,18 @@ export default function Hero() {
           </p>
 
           <div className="flex flex-row gap-3">
-            <button className="bg-[#0f766e] hover:bg-[#0d6460] text-white text-xs font-bold px-6 sm:px-8 py-3 uppercase tracking-widest transition-colors duration-200">
+          <button
+            onClick={() => navigate('/services')} 
+              className="bg-[#0f766e] hover:bg-[#0d6460] text-white text-xs font-bold px-8 py-3 uppercase tracking-widest transition-colors duration-200 scroll-mt-[150px]"
+              >
               Get A Quote
             </button>
-            <button className="bg-transparent hover:bg-white/10 text-white border-2 border-white/40 hover:border-white/70 text-xs font-bold px-6 sm:px-8 py-3 uppercase tracking-widest transition-all duration-200">
-              Our Services
-            </button>
+          <button
+              onClick={() => navigate('/contact#contact-info')} 
+              className="bg-transparent hover:bg-white/10 text-white border-2 border-white/40 hover:border-white/70 text-xs font-bold px-8 py-3 uppercase tracking-widest transition-all duration-200 scroll-mt-[150px]"
+            >
+              Contact Us
+          </button>
           </div>
         </div>
       </div>

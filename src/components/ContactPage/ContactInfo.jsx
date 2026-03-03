@@ -1,13 +1,15 @@
 import emailjs from "@emailjs/browser";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 function FieldError({ message }) {
-  if (!message) return null
-  return <p className="text-red-500 text-xs mt-1">{message}</p>
+  if (!message) return null;
+  return <p className="text-red-500 text-xs mt-1">{message}</p>;
 }
 
 export default function ContactInfo() {
   const formRef = useRef();
+  const { hash } = useLocation(); // Listen for #contact-info in the URL
   const [status, setStatus] = useState("idle");
 
   const [fields, setFields] = useState({
@@ -16,62 +18,79 @@ export default function ContactInfo() {
     phone: '',
     company: '',
     message: '',
-  })
-  const [errors, setErrors] = useState({})
+  });
+  
+  const [errors, setErrors] = useState({});
+
+  // --- SCROLL LOGIC ---
+  useEffect(() => {
+    if (hash === '#contact-info') {
+      const element = document.getElementById('contact-info');
+      if (element) {
+        // Small timeout ensures the DOM is fully painted before scrolling
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      }
+    }
+  }, [hash]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target
-    setFields((prev) => ({ ...prev, [name]: value }))
-    setErrors((prev) => ({ ...prev, [name]: null }))
-  }
+    const { name, value } = e.target;
+    setFields((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: null }));
+  };
 
   const validate = () => {
-    const newErrors = {}
-
-    if (!fields.full_name.trim()) newErrors.full_name = 'Name is required.'
-
+    const newErrors = {};
+    if (!fields.full_name.trim()) newErrors.full_name = 'Name is required.';
+    
     if (!fields.email.trim()) {
-      newErrors.email = 'Email address is required.'
+      newErrors.email = 'Email address is required.';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email)) {
-      newErrors.email = 'Enter a valid email address.'
+      newErrors.email = 'Enter a valid email address.';
     }
 
     if (!fields.phone.trim()) {
-      newErrors.phone = 'Phone number is required.'
+      newErrors.phone = 'Phone number is required.';
     } else if (!/^(09|\+639|\+632|0[2-9])\d{7,9}$/.test(fields.phone.replace(/[\s\-]/g, ''))) {
-      newErrors.phone = 'Enter a valid PH number (e.g. 09XX XXX XXXX or (+632) XXXX XXXX).'
+      newErrors.phone = 'Enter a valid PH number (e.g. 09XX XXX XXXX).';
     }
 
-    if (!fields.message.trim()) newErrors.message = 'Please enter your message.'
-
-    return newErrors
-  }
+    if (!fields.message.trim()) newErrors.message = 'Please enter your message.';
+    return newErrors;
+  };
 
   const handleSubmit = (e) => {
-    e.preventDefault()
-    const newErrors = validate()
+    e.preventDefault();
+    const newErrors = validate();
     if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors)
-      const firstKey = Object.keys(newErrors)[0]
-      const el = document.querySelector(`[name="${firstKey}"]`)
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' })
-      return
+      setErrors(newErrors);
+      const firstKey = Object.keys(newErrors)[0];
+      const el = document.querySelector(`[name="${firstKey}"]`);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
     }
 
-    setStatus("sending")
+    setStatus("sending");
     emailjs
       .sendForm("service_kney65d", "template_zte5i96", formRef.current, "0MzGZwWBlw4Dfb0vB")
       .then(
-        () => { setStatus("success"); formRef.current.reset(); setFields({ full_name: '', email: '', phone: '', company: '', message: '' }) },
-        () => { setStatus("error") }
-      )
-  }
+        () => { 
+          setStatus("success"); 
+          formRef.current.reset(); 
+          setFields({ full_name: '', email: '', phone: '', company: '', message: '' }); 
+        },
+        () => { setStatus("error"); }
+      );
+  };
 
   const inputClass = (name) =>
-    `w-full border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 transition ${errors[name]
-      ? 'border-red-400 focus:ring-red-400'
-      : 'border-gray-300 focus:ring-teal-600 focus:border-teal-600'
-    }`
+    `w-full border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 transition ${
+      errors[name]
+        ? 'border-red-400 focus:ring-red-400'
+        : 'border-gray-300 focus:ring-teal-600 focus:border-teal-600'
+    }`;
 
   const infoCards = [
     {
@@ -81,7 +100,7 @@ export default function ContactInfo() {
         </svg>
       ),
       title: 'Head Office',
-      lines: ['Suite 302 Blessingking Bldg,', '440 Rizal Ave Ext, Bet. 9th & 10th Ave,', 'East Grace Park, Caloocan, Metro Manila'],
+      lines: ['Suite 302 Eleongsing Bldg,', '440 Rizal Ave Ext,', 'East Grace Park, Caloocan City'],
     },
     {
       icon: (
@@ -110,12 +129,11 @@ export default function ContactInfo() {
       title: 'Office Hours',
       lines: ['Monday – Friday: 8:00 AM – 5:00 PM', 'Saturday: 9:00 AM – 5:00 PM', 'Sunday & Holidays: Closed'],
     },
-  ]
+  ];
 
   return (
-    <section id="contact-info" className="bg-white py-16 sm:py-20 px-4 sm:px-6">
+    <section id="contact-info" className="bg-white py-16 sm:py-20 px-4 sm:px-6 scroll-mt-0">
       <div className="max-w-6xl mx-auto">
-
         <div className="mb-10">
           <p className="text-sm text-gray-500 mb-2">Contact Information</p>
           <h2 className="text-2xl sm:text-3xl font-bold text-teal-700 mb-3">
@@ -128,7 +146,6 @@ export default function ContactInfo() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
-
           {/* LEFT: info cards + map */}
           <div className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -149,7 +166,7 @@ export default function ContactInfo() {
             <div className="rounded-xl overflow-hidden border border-gray-200 w-full">
               <iframe
                 title="LISAI Office Location"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3860.4!2d120.9833!3d14.6566!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397b40e2f123456%3A0xabcdef!2s440+Rizal+Ave+Ext%2C+East+Grace+Park%2C+Caloocan+City!5e0!3m2!1sen!2sph!4v1"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3860.032233800669!2d120.985551375848!3d14.654116475753018!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397b5e407333333%3A0x7777777777777777!2sRizal%20Ave%20Ext%2C%20Caloocan!5e0!3m2!1sen!2sph!4v1700000000000"
                 className="w-full h-52 sm:h-64 block"
                 loading="lazy"
               />
@@ -167,7 +184,6 @@ export default function ContactInfo() {
             </p>
 
             <form ref={formRef} onSubmit={handleSubmit} noValidate className="space-y-4">
-
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Name <span className="text-red-400">*</span>
@@ -206,7 +222,7 @@ export default function ContactInfo() {
                   type="tel"
                   value={fields.phone}
                   onChange={handleChange}
-                  placeholder="09XX XXX XXXX or (+632) XXXX XXXX"
+                  placeholder="09XX XXX XXXX"
                   className={inputClass('phone')}
                 />
                 <FieldError message={errors.phone} />
@@ -214,7 +230,7 @@ export default function ContactInfo() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Company / Organization <span className="text-gray-300 text-xs font-normal">(optional)</span>
+                  Company <span className="text-gray-300 text-xs font-normal">(optional)</span>
                 </label>
                 <input
                   name="company"
@@ -243,8 +259,9 @@ export default function ContactInfo() {
               <button
                 type="submit"
                 disabled={status === "sending"}
-                className={`w-full py-3 rounded-lg font-semibold text-sm tracking-wide transition ${status === "sending" ? "bg-teal-500 cursor-not-allowed" : "bg-teal-700 hover:bg-teal-800"
-                  } text-white`}
+                className={`w-full py-3 rounded-lg font-semibold text-sm tracking-wide transition ${
+                  status === "sending" ? "bg-teal-500 cursor-not-allowed" : "bg-teal-700 hover:bg-teal-800"
+                } text-white`}
               >
                 {status === "sending" ? "Sending..." : "SEND MESSAGE"}
               </button>
@@ -252,12 +269,12 @@ export default function ContactInfo() {
 
             {status === "success" && (
               <div className="mt-5 p-4 rounded-lg bg-green-50 text-green-700 text-sm">
-                ✅ Your message has been successfully sent. A representative from LISAI will contact you.
+                 Your message has been successfully sent. A representative from LISAI will contact you.
               </div>
             )}
             {status === "error" && (
               <div className="mt-5 p-4 rounded-lg bg-red-50 text-red-700 text-sm">
-                ❌ Something went wrong. Please try again.
+                 Something went wrong. Please try again.
               </div>
             )}
           </div>

@@ -46,7 +46,7 @@ export default function AboutUs() {
           </div>
 
           <a
-            href="#"
+            href="services"
             className="inline-block bg-[#223a3d] hover:bg-[#1a202c] text-white text-[11px] font-black uppercase tracking-[0.2em] px-10 py-4 transition-all duration-300 shadow-md"
           >
             Read More
