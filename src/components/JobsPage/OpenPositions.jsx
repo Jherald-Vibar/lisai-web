@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom'
 import guard1 from '../../assets/guard_1.png'
 
 const positions = [
@@ -22,6 +23,8 @@ const positions = [
 ]
 
 export default function OpenPositions() {
+  const navigate = useNavigate()
+
   return (
     <section className="bg-white py-16 px-6">
       <div className="max-w-5xl mx-auto">
@@ -40,7 +43,6 @@ export default function OpenPositions() {
               key={i}
               style={{ border: '1px solid #e5e7eb', borderRadius: '12px', padding: '20px', display: 'flex', flexDirection: 'column', background: 'white' }}
             >
-              {/* Image box */}
               <div style={{ width: '64px', height: '64px', borderRadius: '8px', backgroundColor: '#ccfbf1', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px' }}>
                 <img src={pos.image} alt={pos.title} style={{ width: '40px', height: '40px', objectFit: 'contain' }} />
               </div>
@@ -56,7 +58,10 @@ export default function OpenPositions() {
                 ))}
               </div>
 
-              <button style={{ color: '#0f766e', fontSize: '12px', fontWeight: '700', textAlign: 'left', letterSpacing: '0.05em', background: 'none', border: 'none', cursor: 'pointer' }}>
+              <button
+                onClick={() => navigate(`/apply/${encodeURIComponent(pos.title)}`)}
+                style={{ color: '#0f766e', fontSize: '12px', fontWeight: '700', textAlign: 'left', letterSpacing: '0.05em', background: 'none', border: 'none', cursor: 'pointer' }}
+              >
                 APPLY FOR THIS ROLE →
               </button>
             </div>
