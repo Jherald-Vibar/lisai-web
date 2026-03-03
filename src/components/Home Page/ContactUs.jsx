@@ -53,8 +53,7 @@ export default function ContactUs() {
             loading="lazy"
             allowFullScreen
             referrerPolicy="no-referrer-when-downgrade"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3860.4!2d120.9833!3d14.6566!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397b40e2f123456%3A0xabcdef!2s440+Rizal+Ave+Ext%2C+East+Grace+Park%2C+Caloocan+City!5e0!3m2!1sen!2sph!4v1"
-          />
+src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3508.260650299751!2d120.9813362746562!3d14.650715285841597!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397b5d6e6b2f15b%3A0xe2b1f86be5230a4d!2sLiberty%20Investigation%20%26%20Security%20Agency%2C%20Inc.!5e0!3m2!1sen!2sph!4v1772504465827!5m2!1sen!2sph" />
         </div>
       </div>
     </section>

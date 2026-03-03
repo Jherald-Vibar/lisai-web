@@ -164,12 +164,14 @@ export default function ContactInfo() {
               ))}
             </div>
             <div className="rounded-xl overflow-hidden border border-gray-200 w-full">
-              <iframe
-                title="LISAI Office Location"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3860.032233800669!2d120.985551375848!3d14.654116475753018!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397b5e407333333%3A0x7777777777777777!2sRizal%20Ave%20Ext%2C%20Caloocan!5e0!3m2!1sen!2sph!4v1700000000000"
-                className="w-full h-52 sm:h-64 block"
-                loading="lazy"
-              />
+             <iframe
+  title="LISAI Office Location"
+  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3508.260650299751!2d120.9813362746562!3d14.650715285841597!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397b5d6e6b2f15b%3A0xe2b1f86be5230a4d!2sLiberty%20Investigation%20%26%20Security%20Agency%2C%20Inc.!5e0!3m2!1sen!2sph!4v1772504465827!5m2!1sen!2sph"
+  className="w-full h-52 sm:h-64 block"
+  loading="lazy"
+  allowFullScreen
+  referrerPolicy="no-referrer-when-downgrade"
+/>
             </div>
           </div>
 
