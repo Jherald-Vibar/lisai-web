@@ -60,7 +60,7 @@ export default function ContactInfo() {
 
     setStatus("sending")
     emailjs
-      .sendForm("service_l5tzziw", "template_9b0ekwt", formRef.current, "PjuCjthlPhvNW1EMA")
+      .sendForm("service_kney65d", "template_zte5i96", formRef.current, "0MzGZwWBlw4Dfb0vB")
       .then(
         () => { setStatus("success"); formRef.current.reset(); setFields({ full_name: '', email: '', phone: '', company: '', message: '' }) },
         () => { setStatus("error") }
@@ -68,10 +68,9 @@ export default function ContactInfo() {
   }
 
   const inputClass = (name) =>
-    `w-full border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 transition ${
-      errors[name]
-        ? 'border-red-400 focus:ring-red-400'
-        : 'border-gray-300 focus:ring-teal-600 focus:border-teal-600'
+    `w-full border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 transition ${errors[name]
+      ? 'border-red-400 focus:ring-red-400'
+      : 'border-gray-300 focus:ring-teal-600 focus:border-teal-600'
     }`
 
   const infoCards = [
@@ -91,7 +90,7 @@ export default function ContactInfo() {
         </svg>
       ),
       title: 'Phone',
-      lines: ['0917-6381250', '(+632) 83040195', '(+632) 73667875'],
+      lines: ['0917 638 1250', '(+632) 8364 0165'],
     },
     {
       icon: (
@@ -244,9 +243,8 @@ export default function ContactInfo() {
               <button
                 type="submit"
                 disabled={status === "sending"}
-                className={`w-full py-3 rounded-lg font-semibold text-sm tracking-wide transition ${
-                  status === "sending" ? "bg-teal-500 cursor-not-allowed" : "bg-teal-700 hover:bg-teal-800"
-                } text-white`}
+                className={`w-full py-3 rounded-lg font-semibold text-sm tracking-wide transition ${status === "sending" ? "bg-teal-500 cursor-not-allowed" : "bg-teal-700 hover:bg-teal-800"
+                  } text-white`}
               >
                 {status === "sending" ? "Sending..." : "SEND MESSAGE"}
               </button>
@@ -266,5 +264,5 @@ export default function ContactInfo() {
         </div>
       </div>
     </section>
-  )
+  );
 }
