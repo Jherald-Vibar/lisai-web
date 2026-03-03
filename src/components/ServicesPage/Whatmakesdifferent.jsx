@@ -23,14 +23,14 @@ export default function WhatMakesDifferent() {
         {/* Right: Stats */}
         <div className="flex-shrink-0 flex flex-row lg:flex-col gap-10 lg:gap-12 text-center items-center justify-center">
           <div className="flex flex-col items-center">
-            <p className="text-5xl sm:text-6xl text-gray-900 font-bold leading-none">40+</p>
+            <p className="text-5xl sm:text-6xl text-white font-bold leading-none">40+</p>
             <p className="text-white/70 text-xs sm:text-sm font-bold uppercase tracking-widest mt-3">
               Years of Proven Experience
             </p>
           </div>
           <div className="hidden lg:block w-16 h-[2px] bg-white/20" />
           <div className="flex flex-col items-center">
-            <p className="text-4xl sm:text-5xl text-gray-900 font-bold leading-none">SOSIA</p>
+            <p className="text-4xl sm:text-5xl text-white font-bold leading-none">SOSIA</p>
             <p className="text-white/70 text-xs sm:text-sm font-bold uppercase tracking-widest mt-3">
               Licensed & Accredited
             </p>
