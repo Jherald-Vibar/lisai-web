@@ -21,6 +21,8 @@ export default function ApplyForm() {
   const [selectedPosition, setSelectedPosition] = useState(decoded)
   const [fileName, setFileName] = useState(null)
   const [fileError, setFileError] = useState(null)
+  const [submitted, setSubmitted] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
 
   const [fields, setFields] = useState({
     first_name: '',
@@ -55,38 +57,56 @@ export default function ApplyForm() {
 
   const validate = () => {
     const newErrors = {}
-
     if (!fields.first_name.trim()) newErrors.first_name = 'First name is required.'
     if (!fields.last_name.trim()) newErrors.last_name = 'Last name is required.'
-
     if (!fields.phone.trim()) {
       newErrors.phone = 'Phone number is required.'
     } else if (!/^(09|\+639)\d{9}$/.test(fields.phone.replace(/\s/g, ''))) {
       newErrors.phone = 'Enter a valid PH number (e.g. 09XX XXX XXXX or +639XX XXX XXXX).'
     }
-
     if (fields.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email)) {
       newErrors.email = 'Enter a valid email address.'
     }
-
     if (!fileName) newErrors.resume = 'Please upload your resume or CV.'
-
     return newErrors
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     const newErrors = validate()
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors)
-      // Scroll to first error
       const firstErrorKey = Object.keys(newErrors)[0]
       const el = document.querySelector(`[name="${firstErrorKey}"]`)
       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' })
       return
     }
-    // Hand off to mailer — form is valid
-    e.target.submit()
+
+    setSubmitting(true)
+    const formEl = e.target
+    const data = new FormData(formEl)
+    // Ensure the selected position from state is used
+    data.set('position', selectedPosition)
+
+    try {
+      const res = await fetch('https://formspree.io/f/mwvrvlpy', {
+        method: 'POST',
+        body: data,
+        headers: { Accept: 'application/json' },
+      })
+      if (res.ok) {
+        setSubmitted(true)
+      } else {
+        const json = await res.json()
+        console.error('Formspree error:', json)
+        alert('Something went wrong. Please try again or email us directly.')
+      }
+    } catch (err) {
+      console.error(err)
+      alert('Network error. Please check your connection and try again.')
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   const inputClass = (name) =>
@@ -95,6 +115,39 @@ export default function ApplyForm() {
         ? 'border-red-400 focus:ring-red-400'
         : 'border-gray-300 focus:ring-teal-600 focus:border-teal-600'
     }`
+
+  // Success screen
+  if (submitted) {
+    return (
+      <div
+        className="min-h-screen flex items-center justify-center px-6"
+        style={{ backgroundColor: '#f9fafb' }}
+      >
+        <div className="max-w-md w-full text-center">
+          <div
+            className="w-16 h-16 mx-auto mb-6 flex items-center justify-center rounded-full"
+            style={{ backgroundColor: '#ccfbf1' }}
+          >
+            <svg viewBox="0 0 24 24" fill="none" className="w-8 h-8" style={{ color: '#0f766e' }}>
+              <path d="M5 13l4 4L19 7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </div>
+          <h2 className="text-2xl font-extrabold text-gray-900 uppercase tracking-tight mb-3">
+            Application Submitted
+          </h2>
+          <p className="text-gray-500 text-sm mb-8 leading-relaxed">
+            Thanks, <strong>{fields.first_name}</strong>. We've received your application for <strong>{selectedPosition}</strong>. Our HR team will be in touch within 3–5 business days.
+          </p>
+          <button
+            onClick={() => navigate('/jobs')}
+            className="text-xs font-bold uppercase tracking-widest text-teal-600 hover:text-teal-800 transition-colors"
+          >
+            ← Back to Jobs
+          </button>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen px-6 py-10" style={{ backgroundColor: '#f9fafb' }}>
@@ -124,7 +177,7 @@ export default function ApplyForm() {
 
         {/* Form card */}
         <div className="bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 shadow-sm">
-          <form onSubmit={handleSubmit} noValidate className="space-y-5">
+          <form onSubmit={handleSubmit} noValidate encType="multipart/form-data" className="space-y-5">
 
             {/* Name */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -287,9 +340,10 @@ export default function ApplyForm() {
 
             <button
               type="submit"
-              className="w-full bg-[#0f766e] hover:bg-[#0d6460] text-white text-xs font-bold py-3.5 uppercase tracking-widest transition-colors duration-200 rounded-lg mt-2"
+              disabled={submitting}
+              className="w-full bg-[#0f766e] hover:bg-[#0d6460] disabled:opacity-60 disabled:cursor-not-allowed text-white text-xs font-bold py-3.5 uppercase tracking-widest transition-colors duration-200 rounded-lg mt-2"
             >
-              Submit Application
+              {submitting ? 'Submitting...' : 'Submit Application'}
             </button>
 
             <p className="text-center text-gray-400 text-xs">
