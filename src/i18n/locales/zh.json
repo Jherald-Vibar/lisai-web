@@ -185,23 +185,34 @@
   },
   "jobs": {
     "hero": {
-      "label": "招聘 / 培训",
+      "label": "招聘 · 培训",
       "wanted": "诚聘：",
       "position": "保安人员",
       "subtitle": "您有兴趣从事保安工作吗？加入我们出色的团队，迈出职业生涯的第一步。",
-      "getQuote": "免费报价",
+      "applyNow": "立即申请",
       "contact": "联系我们",
+      "stat1val": "600+",
       "stat1": "在职保安人员",
+      "stat2val": "40+",
       "stat2": "行业经验年数",
+      "stat3val": "SOSIA",
       "stat3": "认证培训",
+      "stat4val": "全职",
       "stat4": "职位空缺"
     },
     "positions": {
       "label": "空缺职位",
       "title": "我们正在招聘",
       "subtitle": "我们自豪地提供全面的培训课程，为有志于在安保行业出人头地的人才提供装备。部分职位无需工作经验。",
-      "role": "保安人员",
-      "roleDesc": "负责保护客户场所安全、进行巡逻、监控监控设备，以及维持指定岗位的秩序。",
+      "p1title": "保安人员",
+      "p1desc": "男女均可申请。负责保护客户场所安全、进行巡逻、监控监控设备，以及维持指定岗位的秩序。",
+      "p1tag1": "男女均可",
+      "p2title": "值班主管",
+      "p2desc": "负责监督指定场所的安保运营，与客户代表协调，确保所有保安人员得到妥善部署并履行职责。",
+      "p2tag1": "领导职位",
+      "p3title": "班次主管",
+      "p3desc": "在指定班次内监督保安团队，开展检查、提交事故报告，并确保始终遵循岗位指令。",
+      "p3tag1": "督导职位",
       "fullTime": "全职",
       "benefits": "福利及奖金",
       "sosia": "SOSIA认证",
@@ -332,7 +343,18 @@
       "errResume": "请上传您的简历或CV。",
       "errGeneric": "出现错误，请重试或直接发送电子邮件联系我们。",
       "errNetwork": "网络错误，请检查您的网络连接后重试。",
-      "fileSizeErr": "文件超过5MB限制，请上传较小的文件。"
+      "fileSizeErr": "文件超过5MB限制，请上传较小的文件。",
+      "posGeneral": "一般申请",
+      "posGuard": "保安人员",
+      "posOIC": "值班主管",
+      "posSIC": "班次主管",
+      "placeholderFirst": "胡安",
+      "placeholderLast": "德拉克鲁斯",
+      "placeholderPhone": "09XX XXX XXXX",
+      "placeholderEmail": "juan@email.com",
+      "placeholderEmployer": "公司名称或N/A",
+      "placeholderIntro": "请简单介绍自己，以及为何希望加入LISAI……",
+      "expPlaceholder": "请选择工作经验年数"
     }
   }
 }

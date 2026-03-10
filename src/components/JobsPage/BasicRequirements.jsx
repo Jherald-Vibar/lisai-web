@@ -1,30 +1,21 @@
-const requirements = [
-  'Filipino citizen, male or female, 21–45 years old',
-  'At least high school graduate (Senior High preferred)',
-  'Physically and mentally fit; no criminal record',
-  'Willing to undergo SOSIA-accredited training',
-  'Must be able to work in shifting schedules',
-  'Valid NBI Clearance and Barangay Clearance',
-]
-
-const benefits = [
-  { title: 'Competitive Pay', description: 'Salary aligned with DOLE standards and industry rates' },
-  { title: 'Paid Training', description: 'SOSIA-accredited courses through Palacio Training Academy' },
-  { title: 'Benefits Package', description: 'SSS, PhilHealth, Pag-IBIG, and 13th-month pay' },
-  { title: 'Stable Employment', description: '40+ years of company stability with 600+ active guards' },
-  { title: 'Career Growth', description: 'Clear path from guard to supervisor and senior roles' },
-  { title: 'Flexible Posting', description: 'Assignments across Metro Manila in diverse industries' },
-]
+import { useLang } from '../../i18n/useLang'
 
 export default function BasicRequirements() {
+  const { t } = useLang()
+
+  const requirements = ['r1','r2','r3','r4','r5','r6'].map(k => t(`jobs.requirements.${k}`))
+  const benefits = [
+    ['b1Title','b1Desc'], ['b2Title','b2Desc'], ['b3Title','b3Desc'],
+    ['b4Title','b4Desc'], ['b5Title','b5Desc'], ['b6Title','b6Desc'],
+  ]
+
   return (
     <section className="bg-white py-16 px-6">
       <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
-
         {/* Left - Requirements */}
         <div>
           <h2 className="text-lg sm:text-xl font-bold text-gray-900 uppercase tracking-wide mb-6">
-            Basic Requirements
+            {t('jobs.requirements.title')}
           </h2>
           <div className="space-y-2">
             {requirements.map((req) => (
@@ -46,13 +37,13 @@ export default function BasicRequirements() {
         {/* Right - Why Join */}
         <div>
           <h2 className="text-lg sm:text-xl font-bold text-gray-900 uppercase tracking-wide mb-6">
-            Why Join LISAI
+            {t('jobs.requirements.whyTitle')}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {benefits.map((benefit) => (
-              <div key={benefit.title} className="border border-gray-400 rounded-lg p-4 hover:shadow-sm transition">
-                <h3 className="font-semibold text-gray-800 text-sm mb-1">{benefit.title}</h3>
-                <p className="text-gray-500 text-xs leading-relaxed">{benefit.description}</p>
+            {benefits.map(([tk, dk]) => (
+              <div key={tk} className="border border-gray-400 rounded-lg p-4 hover:shadow-sm transition">
+                <h3 className="font-semibold text-gray-800 text-sm mb-1">{t(`jobs.requirements.${tk}`)}</h3>
+                <p className="text-gray-500 text-xs leading-relaxed">{t(`jobs.requirements.${dk}`)}</p>
               </div>
             ))}
           </div>
