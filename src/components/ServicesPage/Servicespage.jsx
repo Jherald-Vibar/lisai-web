@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect } from 'react'
 import ServicesHero from './Serviceshero'
 import OurSecurityServices from './Oursecurityservices'
 import HowWeProtect from './Howweprotect'
@@ -7,14 +7,15 @@ import WhatMakesDifferent from './Whatmakesdifferent'
 import TalkToTeam from './Talktoteam'
 
 export default function ServicesPage() {
-
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+    window.scrollTo(0, 0)
+  }, [])
 
   return (
     <div className="font-sans">
-      <ServicesHero /> <OurSecurityServices /> <HowWeProtect />
+      <ServicesHero />
+      <OurSecurityServices />
+      <HowWeProtect />
       <IndustriesWeProtect />
       <WhatMakesDifferent />
       <TalkToTeam />

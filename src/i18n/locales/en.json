@@ -118,54 +118,59 @@
   "services": {
     "hero": {
       "label": "Our Services",
-      "title": "Security Solutions For Every Threat",
+      "title": "Security Solutions",
+      "highlight": "For Every Threat.",
       "subtitle": "From guarding your business premises to protecting high-profile individuals — we offer a full range of professional security services tailored to your needs.",
-      "getQuote": "Get a free quote",
-      "contact": "Contact us"
+      "contact": "Contact Us"
     },
     "our": {
       "label": "Our Services",
-      "title": "Our Security Services",
+      "title": "Our Security",
+      "highlight": "Services",
       "subtitle": "Every service is designed with one goal in mind — your safety. We match the right team and approach to your specific situation.",
-      "business": "Business Security",
-      "businessDesc": "Ensuring the safety of facilities and staff through vigilant property patrols, diligent surveillance equipment monitoring, and thorough inspections of buildings and equipment.",
-      "asset": "Asset & Land Security",
-      "assetDesc": "Highly proficient in protecting company assets — including inventories and stocks — and ensuring the security of vacant properties and buildings by preventing unauthorized entry and squatting.",
-      "personal": "Personal Security",
-      "personalDesc": "Prominent individuals and corporate entities face various threats, from stalkers to protests. Our personal security packages prioritize your well-being, granting you the freedom to pursue your goals confidently.",
-      "corporate": "Corporate & Private Property Protection",
-      "corporateDesc": "Round-the-clock security for corporate offices, residences, and private estates. We use advanced technology and highly trained personnel to ensure the safety and security of your assets and premises."
+      "b1": "Business Security",
+      "b1desc": "Ensuring the safety of facilities and staff through vigilant property patrols, diligent surveillance equipment monitoring, and thorough inspections of buildings and equipment.",
+      "b2": "Asset & Land Security",
+      "b2desc": "Highly proficient in protecting company assets — including inventories and stocks — and ensuring the security of vacant properties and buildings by preventing unauthorized entry and squatting.",
+      "b3": "Personal Security",
+      "b3desc": "Prominent individuals and corporate entities face various threats, from stalkers to protests. Our personal security packages prioritize your well-being, granting you the freedom to pursue your goals confidently.",
+      "b4": "Corporate & Private Property Protection",
+      "b4desc": "Round-the-clock security for corporate offices, residences, and private estates. We use advanced technology and highly trained personnel to ensure the safety and security of your assets and premises."
     },
     "how": {
       "label": "Our Process",
-      "title": "How We Get You Protected",
+      "title": "How We Get",
+      "highlight": "You",
+      "titleEnd": "Protected",
       "subtitle": "A straightforward process from first contact to full deployment — no guesswork, no delays.",
-      "step1": "Initial Consultation",
-      "step1Desc": "We discuss your specific security needs, concerns, and requirements — no hassle.",
-      "step2": "Site Assessment",
-      "step2Desc": "Our team conducts a thorough evaluation of your location to identify vulnerabilities.",
-      "step3": "Custom Security Plan",
-      "step3Desc": "We design a tailored plan and assign the right personnel and equipment for your needs.",
-      "step4": "Deployment & Monitoring",
-      "step4Desc": "Guards are deployed and operations are continuously monitored for your peace of mind."
+      "s1title": "Initial Consultation",
+      "s1desc": "We discuss your specific security needs, concerns, and requirements — no hassle.",
+      "s2title": "Site Assessment",
+      "s2desc": "Our team conducts a thorough evaluation of your location to identify vulnerabilities.",
+      "s3title": "Custom Security Plan",
+      "s3desc": "We design a tailored plan and assign the right personnel and equipment for your needs.",
+      "s4title": "Deployment & Monitoring",
+      "s4desc": "Guards are deployed and operations are continuously monitored for your peace of mind."
     },
     "industries": {
       "label": "Who We Serve",
       "title": "Industries We Protect",
       "subtitle": "Our guards and security personnel are experienced across a wide range of environments and industries, ensuring specialized protection for every sector.",
-      "logistics": "Logistics & Transportation",
-      "warehouses": "Warehouses & Stockrooms",
-      "residential": "Residential Subdivisions",
-      "offices": "Offices & Corporate Buildings",
-      "shopping": "Shopping Malls & Retail",
-      "highProfile": "High-Profile Individuals"
+      "i1": "Logistics & Transportation",
+      "i2": "Warehouses & Stockrooms",
+      "i3": "Residential Subdivisions",
+      "i4": "Offices & Corporate Buildings",
+      "i5": "Shopping Malls & Retail",
+      "i6": "High-Profile Individuals"
     },
     "different": {
       "label": "Why Choose LISAI",
       "title": "What Makes Our Service Different",
       "subtitle": "We don't just post a guard and walk away. Every engagement is backed by structured training, proper supervision, and a commitment to your long-term safety.",
-      "years": "Years of Proven Experience",
-      "accredited": "Licensed & Accredited"
+      "stat1val": "40+",
+      "stat1label": "Years of Proven Experience",
+      "stat2val": "SOSIA",
+      "stat2label": "Licensed & Accredited"
     },
     "talk": {
       "label": "Ready to Get Started?",
