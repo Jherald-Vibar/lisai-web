@@ -5,10 +5,10 @@ import consultationIcon from '../../assets/consultation_1.png'
 import vipIcon from '../../assets/personal-data_1.png'
 
 const serviceKeys = [
-  { icon: guardIcon, titleKey: 'home.services.business', descKey: 'home.services.businessDesc' },
-  { icon: researchIcon, titleKey: 'home.services.asset', descKey: 'home.services.assetDesc' },
-  { icon: consultationIcon, titleKey: 'home.services.personal', descKey: 'home.services.personalDesc' },
-  { icon: vipIcon, titleKey: 'home.services.corporate', descKey: 'home.services.corporateDesc' },
+  { icon: guardIcon,        titleKey: 'home.services.business',  descKey: 'home.services.businessDesc' },
+  { icon: researchIcon,     titleKey: 'home.services.asset',     descKey: 'home.services.assetDesc' },
+  { icon: consultationIcon, titleKey: 'home.services.personal',  descKey: 'home.services.personalDesc' },
+  { icon: vipIcon,          titleKey: 'home.services.corporate', descKey: 'home.services.corporateDesc' },
 ]
 
 export default function ServiceHighlights() {
@@ -17,13 +17,11 @@ export default function ServiceHighlights() {
   return (
     <>
       <div className="w-full h-6 bg-[#0a201d]" />
-
       <section className="bg-white py-16 px-6">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-center text-3xl sm:text-4xl md:text-5xl font-bold text-[#2d3748] mb-12 tracking-tight">
             {t('home.services.label')} <span className="text-[#009688]">{t('home.services.title')}</span>
           </h2>
-
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
             {serviceKeys.map((s) => (
               <div key={s.titleKey} className="flex flex-col items-center text-center group">
@@ -40,7 +38,6 @@ export default function ServiceHighlights() {
             ))}
           </div>
         </div>
-
         <div className="max-w-7xl mx-auto mt-16 border-t-2 border-[#009688] opacity-40" />
       </section>
     </>

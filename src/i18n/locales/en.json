@@ -22,34 +22,45 @@
   },
   "home": {
     "hero": {
-      "tagline": "SOSIA Licensed & Accredited",
-      "title": "Your Safety Is Our Mission",
-      "subtitle": "Professional security services trusted by businesses and individuals across Metro Manila for over 40 years.",
+      "tagline": "Est. 1982 · Philippine Security",
+      "title": "Securing Trust For Over Four Decades",
+      "subtitle": "Pioneers in the Philippine security industry since 1982. We provide proven, reliable protection for businesses and individuals alike.",
       "getQuote": "Get a Free Quote",
-      "learnMore": "Learn More"
+      "learnMore": "Contact Us"
     },
     "services": {
-      "label": "What We Offer",
-      "title": "Our Core Services",
-      "business": "Business Security",
-      "businessDesc": "Vigilant protection for your facilities, staff, and assets.",
-      "asset": "Asset & Land Security",
-      "assetDesc": "Securing vacant properties and company inventories.",
-      "personal": "Personal Security",
-      "personalDesc": "Discreet protection for high-profile individuals.",
-      "corporate": "Corporate Protection",
-      "corporateDesc": "Round-the-clock security for offices and private estates."
+      "label": "Service",
+      "title": "Highlights",
+      "business": "Manned Guarding",
+      "businessDesc": "Professional, uniformed guards for malls, offices and subdivisions, providing visible deterrence and rapid response.",
+      "asset": "Investigation",
+      "assetDesc": "Comprehensive background checks, surveillance and private investigation services for individuals and businesses.",
+      "personal": "Security Consultancy",
+      "personalDesc": "Expert risk assessment, safety audits and tailored security planning to mitigate vulnerabilities.",
+      "corporate": "VIP Protection",
+      "corporateDesc": "Discreet, highly-trained escort services and close-in security for executives and high-profile individuals."
     },
     "about": {
       "label": "Who We Are",
-      "title": "40+ Years of Trusted Security",
-      "body": "Liberty Investigation & Security Agency Inc. has been protecting Metro Manila since 1983. With over 5,000 active guards and SOSIA accreditation, we deliver professional security solutions tailored to every client.",
-      "learnMore": "Learn More About Us"
+      "title": "Discover Our Security Expertise",
+      "body": "Learn how our experienced team can provide unparalleled protection and peace of mind for your business or personal needs.",
+      "learnMore": "Read More",
+      "cta": "Reach out today for a no-obligation quote."
+    },
+    "aboutSection": {
+      "label": "About Us",
+      "title": "Built on Integrity, Bound by Trust.",
+      "body": "Over four decades of unmatched dedication to safeguarding your lives and assets.",
+      "stat1": "Active Clients",
+      "stat2": "Former Clients",
+      "stat3": "Security Officers",
+      "learnMore": "Read More"
     },
     "contact": {
-      "label": "Get In Touch",
-      "title": "Let's Talk About Your Security",
-      "subtitle": "Reach out and we'll respond within one business day.",
+      "label": "Contact Us",
+      "title": "Let's Secure Your Future,",
+      "highlight": "Together.",
+      "subtitle": "Reach out to our team for a personalized consultation and get started on protecting what matters most.",
       "name": "Your Name",
       "email": "Email Address",
       "message": "Your Message",
