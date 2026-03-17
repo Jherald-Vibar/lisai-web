@@ -384,6 +384,19 @@
       "errPhoneInvalid": "Enter a valid PH number (e.g. 09XX XXX XXXX).",
       "errMessage": "Please enter your message."
     },
+    "departments": {
+      "label": "Looking for a specific department?",
+      "subtitle": "Contact them directly here.",
+      "d1title": "Human Resources",
+      "d1desc": "Recruitment, employment concerns, and HR inquiries.",
+      "d1email": "lisai.officialhrdept@gmail.com",
+      "d2title": "Accounting",
+      "d2desc": "Billing, payments, and financial concerns.",
+      "d2email": "lisai.officialacctdept@gmail.com",
+      "d3title": "Operations",
+      "d3desc": "Inspector and guard concerns, deployment, and operational matters.",
+      "d3email": "lisai.officialopdept@gmail.com"
+    },
     "social": {
       "label": "Stay Connected",
       "title": "Follow Us",

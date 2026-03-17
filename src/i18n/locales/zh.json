@@ -322,6 +322,19 @@
       "errPhoneInvalid": "请输入有效的菲律宾电话号码（例如09XX XXX XXXX）。",
       "errMessage": "请填写留言内容。"
     },
+    "departments": {
+      "label": "寻找特定部门？",
+      "subtitle": "请直接联系相关部门。",
+      "d1title": "人力资源部",
+      "d1desc": "招聘、雇佣事宜及人力资源咨询。",
+      "d1email": "lisai.officialhrdept@gmail.com",
+      "d2title": "财务部",
+      "d2desc": "账单、付款及财务事宜。",
+      "d2email": "lisai.officialacctdept@gmail.com",
+      "d3title": "运营部",
+      "d3desc": "督导及保安人员事宜、部署及运营相关事项。",
+      "d3email": "lisai.officialopdept@gmail.com"
+    },
     "social": {
       "label": "保持联系",
       "title": "关注我们",
