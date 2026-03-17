@@ -387,6 +387,7 @@
       "errPhone": "请填写电话号码。",
       "errPhoneInvalid": "请输入有效的菲律宾电话号码（例如09XX XXX XXXX或+639XX XXX XXXX）。",
       "errEmail": "请输入有效的电子邮件地址。",
+      "errEmailReq": "请填写电子邮件地址。",
       "errResume": "请上传您的简历或CV。",
       "errGeneric": "出现错误，请重试或直接发送电子邮件联系我们。",
       "errNetwork": "网络错误，请检查您的网络连接后重试。",

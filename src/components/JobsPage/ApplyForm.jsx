@@ -60,7 +60,9 @@ export default function ApplyForm() {
     } else if (!/^(09|\+639)\d{9}$/.test(fields.phone.replace(/\s/g, ''))) {
       newErrors.phone = t('apply.form.errPhoneInvalid')
     }
-    if (fields.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email)) {
+    if (!fields.email.trim()) {
+      newErrors.email = t('apply.form.errEmailReq')
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email)) {
       newErrors.email = t('apply.form.errEmail')
     }
     if (!fileName) newErrors.resume = t('apply.form.errResume')
@@ -178,7 +180,7 @@ export default function ApplyForm() {
               </div>
               <div>
                 <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
-                  {t('apply.form.email')}
+                  {t('apply.form.email')} <span className="text-red-400">{t('apply.form.required')}</span>
                 </label>
                 <input name="email" type="email" value={fields.email} onChange={handleChange}
                   placeholder={t('apply.form.placeholderEmail')} className={inputClass('email')} />
