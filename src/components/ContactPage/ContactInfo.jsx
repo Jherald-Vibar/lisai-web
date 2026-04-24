@@ -1,4 +1,3 @@
-import emailjs from "@emailjs/browser"
 import { useRef, useState, useEffect } from "react"
 import { useLocation } from "react-router-dom"
 import { useLang } from '../../i18n/useLang'
@@ -9,7 +8,6 @@ function FieldError({ message }) {
 }
 
 export default function ContactInfo() {
-  const formRef = useRef()
   const { hash } = useLocation()
   const { t } = useLang()
   const [status, setStatus] = useState("idle")
@@ -53,7 +51,7 @@ export default function ContactInfo() {
     return newErrors
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     const newErrors = validate()
     if (Object.keys(newErrors).length > 0) {
@@ -63,17 +61,32 @@ export default function ContactInfo() {
       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' })
       return
     }
+
     setStatus("sending")
-    emailjs
-      .sendForm("service_kney65d", "template_zte5i96", formRef.current, "0MzGZwWBlw4Dfb0vB")
-      .then(
-        () => {
-          setStatus("success")
-          formRef.current.reset()
-          setFields({ full_name: '', email: '', phone: '', company: '', message: '' })
-        },
-        () => { setStatus("error") }
-      )
+
+    const data = new FormData()
+    data.append('access_key', '8ae2e836-fbd0-4362-b2aa-b5cb13aa46d9')
+    data.append('subject', `Contact Form — ${fields.full_name}`)
+    data.append('full_name', fields.full_name)
+    data.append('email', fields.email)
+    data.append('phone', fields.phone)
+    data.append('company', fields.company || 'None provided')
+    data.append('message', fields.message)
+
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST', body: data, headers: { Accept: 'application/json' },
+      })
+      const json = await res.json()
+      if (res.ok && json.success) {
+        setStatus("success")
+        setFields({ full_name: '', email: '', phone: '', company: '', message: '' })
+      } else {
+        setStatus("error")
+      }
+    } catch {
+      setStatus("error")
+    }
   }
 
   const inputClass = (name) =>
@@ -171,7 +184,7 @@ export default function ContactInfo() {
             </h3>
             <p className="text-gray-400 text-sm mb-6">{t('contact.info.formSubtitle')}</p>
 
-            <form ref={formRef} onSubmit={handleSubmit} noValidate className="space-y-4">
+            <form onSubmit={handleSubmit} noValidate className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   {t('contact.info.fieldName')} <span className="text-red-400">{t('contact.info.required')}</span>
