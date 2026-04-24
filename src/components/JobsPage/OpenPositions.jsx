@@ -6,26 +6,36 @@ export default function OpenPositions() {
   const navigate = useNavigate()
   const { t } = useLang()
 
-  const positions = [
-    {
-      image: guard1,
-      titleKey: 'jobs.positions.p1title',
-      descKey: 'jobs.positions.p1desc',
-      tags: [t('jobs.positions.p1tag1'), t('jobs.positions.fullTime'), t('jobs.positions.benefits'), t('jobs.positions.sosia')],
-    },
-    {
-      image: guard1,
-      titleKey: 'jobs.positions.p2title',
-      descKey: 'jobs.positions.p2desc',
-      tags: [t('jobs.positions.fullTime'), t('jobs.positions.p2tag1'), t('jobs.positions.benefits')],
-    },
-    {
-      image: guard1,
-      titleKey: 'jobs.positions.p3title',
-      descKey: 'jobs.positions.p3desc',
-      tags: [t('jobs.positions.fullTime'), t('jobs.positions.p3tag1'), t('jobs.positions.benefits')],
-    },
-  ]
+const positions = [
+  {
+    image: guard1,
+    titleKey: 'jobs.positions.p1title',
+    descKey: 'jobs.positions.p1desc',
+    tags: [t('jobs.positions.p1tag1'), t('jobs.positions.fullTime'), t('jobs.positions.benefits'), t('jobs.positions.sosia')],
+    type: 'guard',
+  },
+  {
+    image: guard1,
+    titleKey: 'jobs.positions.p2title',
+    descKey: 'jobs.positions.p2desc',
+    tags: [t('jobs.positions.fullTime'), t('jobs.positions.p2tag1'), t('jobs.positions.benefits')],
+    type: 'guard',
+  },
+  {
+    image: guard1,
+    titleKey: 'jobs.positions.p3title',
+    descKey: 'jobs.positions.p3desc',
+    tags: [t('jobs.positions.fullTime'), t('jobs.positions.p3tag1'), t('jobs.positions.benefits')],
+    type: 'guard',
+  },
+  {
+    image: guard1,
+    titleKey: 'jobs.positions.p4title',
+    descKey: 'jobs.positions.p4desc',
+    tags: [t('jobs.positions.p4tag1'), t('jobs.positions.fullTime'), t('jobs.positions.benefits')],
+    type: 'backoffice',
+  },
+]
 
   return (
     <section className="bg-white py-16 px-6">
@@ -56,8 +66,8 @@ export default function OpenPositions() {
                     </span>
                   ))}
                 </div>
-                <button
-                  onClick={() => navigate(`/apply/${encodeURIComponent(title)}`)}
+<button
+  onClick={() => navigate(`/apply/${encodeURIComponent(title)}?type=${pos.type}`)}
                   style={{ color: '#0f766e', fontSize: '12px', fontWeight: '700', textAlign: 'left', letterSpacing: '0.05em', background: 'none', border: 'none', cursor: 'pointer' }}
                 >
                   {t('jobs.positions.apply')}

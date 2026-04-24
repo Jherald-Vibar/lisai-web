@@ -1,11 +1,13 @@
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { useLang } from '../../i18n/useLang'
 
 export default function ApplyIntro() {
-  const { position } = useParams()
-  const navigate = useNavigate()
-  const { t } = useLang()
-  const decoded = decodeURIComponent(position)
+const { position } = useParams()
+const navigate = useNavigate()
+const [searchParams] = useSearchParams()
+const { t } = useLang()
+const decoded = decodeURIComponent(position)
+const posType = searchParams.get('type') ?? 'guard'
 
   const expects = ['e1','e2','e3','e4'].map(k => t(`apply.intro.${k}`))
 
@@ -67,7 +69,7 @@ export default function ApplyIntro() {
           </div>
 
           <button
-            onClick={() => navigate(`/apply/${encodeURIComponent(decoded)}/form`)}
+            onClick={() => navigate(`/apply/${encodeURIComponent(decoded)}/form?type=${posType}`)}
             className="w-full bg-[#0f766e] hover:bg-[#0d6460] text-white text-xs font-bold py-3 uppercase tracking-widest transition-colors duration-200"
           >
             {t('apply.intro.proceed')}

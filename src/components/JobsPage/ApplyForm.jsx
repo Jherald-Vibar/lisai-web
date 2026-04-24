@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { useState } from 'react'
 import { useLang } from '../../i18n/useLang'
 
@@ -7,103 +7,208 @@ function FieldError({ message }) {
   return <p className="text-red-500 text-xs mt-1">{message}</p>
 }
 
+const STEP_FORM    = 'form'
+const STEP_RESUME  = 'resume'
+const STEP_PREVIEW = 'preview'
+
 export default function ApplyForm() {
   const { position } = useParams()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const { t } = useLang()
   const decoded = decodeURIComponent(position)
+  const posType = searchParams.get('type') ?? 'guard'
 
-  const positionOptions = [
-    { value: 'General Application', label: t('apply.form.posGeneral') },
-    { value: 'Security Guard',      label: t('apply.form.posGuard') },
-    { value: 'Officer in Charge',   label: t('apply.form.posOIC') },
-    { value: 'Shift in Charge',     label: t('apply.form.posSIC') },
-  ]
+  // Shorthand for apply.form.* keys
+  const f = (key) => t(`apply.form.${key}`)
 
-  const [selectedPosition, setSelectedPosition] = useState(decoded)
-  const [fileName, setFileName] = useState(null)
-  const [fileError, setFileError] = useState(null)
+  const positionOptions = posType === 'backoffice'
+    ? [
+        { value: 'Human Resources', label: f('posBO_HR') },
+        { value: 'Operations',      label: f('posBO_Ops') },
+        { value: 'Marketing',       label: f('posBO_Mktg') },
+        { value: 'Accounting',      label: f('posBO_Acct') },
+      ]
+    : [
+        { value: 'General Application', label: f('posGeneral') },
+        { value: 'Security Guard',      label: f('posGuard') },
+        { value: 'Officer in Charge',   label: f('posOIC') },
+        { value: 'Shift in Charge',     label: f('posSIC') },
+      ]
+
+  const [step, setStep] = useState(STEP_FORM)
+  const [selectedPosition, setSelectedPosition] = useState(
+    posType === 'backoffice' ? 'Human Resources' : decoded
+  )
   const [submitted, setSubmitted] = useState(false)
   const [submitting, setSubmitting] = useState(false)
 
+  // --- Personal fields ---
   const [fields, setFields] = useState({
     first_name: '', last_name: '', phone: '', email: '',
     experience: '', previous_employer: '', intro: '',
   })
   const [errors, setErrors] = useState({})
 
+  // --- Resume fields ---
+  const [skillInput, setSkillInput] = useState('')
+  const [skills, setSkills] = useState([])
+  const [education, setEducation] = useState([{ school: '', course: '', year: '' }])
+  const [workExp, setWorkExp] = useState([{ company: '', role: '', duration: '' }])
+  const [certifications, setCertifications] = useState('')
+  const [resumeErrors, setResumeErrors] = useState({})
+
+  // ── Handlers: personal ──
   const handleChange = (e) => {
     const { name, value } = e.target
-    setFields((prev) => ({ ...prev, [name]: value }))
-    setErrors((prev) => ({ ...prev, [name]: null }))
+    setFields(prev => ({ ...prev, [name]: value }))
+    setErrors(prev => ({ ...prev, [name]: null }))
   }
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0]
-    if (!file) return
-    if (file.size > 5 * 1024 * 1024) {
-      setFileError(t('apply.form.fileSizeErr'))
-      setFileName(null)
-      e.target.value = ''
-      return
+  // ── Handlers: skills ──
+  const addSkill = () => {
+    const trimmed = skillInput.trim()
+    if (trimmed && !skills.includes(trimmed)) {
+      setSkills(prev => [...prev, trimmed])
     }
-    setFileError(null)
-    setFileName(file.name)
+    setSkillInput('')
+  }
+  const removeSkill = (s) => setSkills(prev => prev.filter(x => x !== s))
+  const handleSkillKey = (e) => {
+    if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); addSkill() }
   }
 
-  const validate = () => {
-    const newErrors = {}
-    if (!fields.first_name.trim()) newErrors.first_name = t('apply.form.errFirstName')
-    if (!fields.last_name.trim()) newErrors.last_name = t('apply.form.errLastName')
+  // ── Handlers: education ──
+  const updateEducation = (i, field, value) => {
+    setEducation(prev => prev.map((row, idx) => idx === i ? { ...row, [field]: value } : row))
+    setResumeErrors(prev => ({ ...prev, education: null }))
+  }
+  const addEducation = () => setEducation(prev => [...prev, { school: '', course: '', year: '' }])
+  const removeEducation = (i) => setEducation(prev => prev.filter((_, idx) => idx !== i))
+
+  // ── Handlers: work experience ──
+  const updateWork = (i, field, value) => {
+    setWorkExp(prev => prev.map((row, idx) => idx === i ? { ...row, [field]: value } : row))
+  }
+  const addWork = () => setWorkExp(prev => [...prev, { company: '', role: '', duration: '' }])
+  const removeWork = (i) => setWorkExp(prev => prev.filter((_, idx) => idx !== i))
+
+  // ── Validation: step 1 ──
+  const validatePersonal = () => {
+    const e = {}
+    if (!fields.first_name.trim()) e.first_name = f('errFirstName')
+    if (!fields.last_name.trim())  e.last_name  = f('errLastName')
     if (!fields.phone.trim()) {
-      newErrors.phone = t('apply.form.errPhone')
+      e.phone = f('errPhone')
     } else if (!/^(09|\+639)\d{9}$/.test(fields.phone.replace(/\s/g, ''))) {
-      newErrors.phone = t('apply.form.errPhoneInvalid')
+      e.phone = f('errPhoneInvalid')
     }
     if (!fields.email.trim()) {
-      newErrors.email = t('apply.form.errEmailReq')
+      e.email = f('errEmailReq')
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email)) {
-      newErrors.email = t('apply.form.errEmail')
+      e.email = f('errEmail')
     }
-    if (!fileName) newErrors.resume = t('apply.form.errResume')
-    return newErrors
+    return e
   }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    const newErrors = validate()
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors)
-      const firstErrorKey = Object.keys(newErrors)[0]
-      const el = document.querySelector(`[name="${firstErrorKey}"]`)
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  // ── Validation: step 2 ──
+  const validateResume = () => {
+    const e = {}
+    if (skills.length === 0) e.skills = f('errSkills')
+    const hasValidEdu = education.some(r => r.school.trim() && r.course.trim())
+    if (!hasValidEdu) e.education = f('errEducation')
+    return e
+  }
+
+  // ── Step navigation ──
+  const handleNextToResume = () => {
+    const e = validatePersonal()
+    if (Object.keys(e).length > 0) {
+      setErrors(e)
+      const first = Object.keys(e)[0]
+      document.querySelector(`[name="${first}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'center' })
       return
     }
+    setStep(STEP_RESUME)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const handleNextToPreview = () => {
+    const e = validateResume()
+    if (Object.keys(e).length > 0) { setResumeErrors(e); return }
+    setStep(STEP_PREVIEW)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const handleBack = () => {
+    if (step === STEP_RESUME)  { setStep(STEP_FORM);   window.scrollTo({ top: 0, behavior: 'smooth' }) }
+    if (step === STEP_PREVIEW) { setStep(STEP_RESUME); window.scrollTo({ top: 0, behavior: 'smooth' }) }
+  }
+
+  // ── Submit ──
+  const handleSubmit = async () => {
     setSubmitting(true)
-    const formEl = e.target
-    const data = new FormData(formEl)
-    data.set('position', selectedPosition)
+
+    const workLines = workExp
+      .filter(w => w.company.trim())
+      .map(w => `${w.role} at ${w.company} (${w.duration})`)
+      .join(' | ')
+
+    const eduLines = education
+      .filter(e => e.school.trim())
+      .map(e => `${e.course} — ${e.school} (${e.year})`)
+      .join(' | ')
+
+    const data = new FormData()
+    data.append('access_key', '8ae2e836-fbd0-4362-b2aa-b5cb13aa46d9')
+    data.append('subject', `Job Application — ${selectedPosition} — ${fields.first_name} ${fields.last_name}`)
+    data.append('position', selectedPosition)
+    data.append('first_name', fields.first_name)
+    data.append('last_name', fields.last_name)
+    data.append('phone', fields.phone)
+    data.append('email', fields.email)
+    data.append('experience', fields.experience)
+    data.append('previous_employer', fields.previous_employer)
+    data.append('intro', fields.intro)
+    data.append('skills', skills.join(', '))
+    data.append('education', eduLines)
+    data.append('work_experience', workLines || 'None provided')
+    data.append('certifications', certifications || 'None provided')
+
     try {
-      const res = await fetch('https://formspree.io/f/mwvrvlpy', {
+      const res = await fetch('https://api.web3forms.com/submit', {
         method: 'POST', body: data, headers: { Accept: 'application/json' },
       })
-      if (res.ok) {
+      const json = await res.json()
+      if (res.ok && json.success) {
         setSubmitted(true)
       } else {
-        alert(t('apply.form.errGeneric'))
+        alert(f('errGeneric'))
       }
     } catch {
-      alert(t('apply.form.errNetwork'))
+      alert(f('errNetwork'))
     } finally {
       setSubmitting(false)
     }
   }
 
+  // ── Shared styles ──
   const inputClass = (name) =>
     `w-full border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 transition ${
-      errors[name] ? 'border-red-400 focus:ring-red-400' : 'border-gray-300 focus:ring-teal-600 focus:border-teal-600'
+      errors[name]
+        ? 'border-red-400 focus:ring-red-400'
+        : 'border-gray-300 focus:ring-teal-600 focus:border-teal-600'
     }`
 
+  const miniInputClass =
+    'w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-teal-600 transition'
+
+  // ── Progress ──
+  const stepIndex = { [STEP_FORM]: 1, [STEP_RESUME]: 2, [STEP_PREVIEW]: 3 }
+  const currentStep = stepIndex[step]
+  const stepLabels = [f('stepPersonal'), f('stepResume'), f('stepPreview')]
+
+  // ── Success screen ──
   if (submitted) {
     return (
       <div className="min-h-screen flex items-center justify-center px-6" style={{ backgroundColor: '#f9fafb' }}>
@@ -114,14 +219,14 @@ export default function ApplyForm() {
             </svg>
           </div>
           <h2 className="text-2xl font-extrabold text-gray-900 uppercase tracking-tight mb-3">
-            {t('apply.form.successTitle')}
+            {f('successTitle')}
           </h2>
           <p className="text-gray-500 text-sm mb-8 leading-relaxed">
-            {t('apply.form.successBody').replace('{position}', selectedPosition)}
+            {f('successBody').replace('{position}', selectedPosition)}
           </p>
           <button onClick={() => navigate('/jobs')}
             className="text-xs font-bold uppercase tracking-widest text-teal-600 hover:text-teal-800 transition-colors">
-            {t('apply.form.backJobs')}
+            {f('backJobs')}
           </button>
         </div>
       </div>
@@ -131,40 +236,80 @@ export default function ApplyForm() {
   return (
     <div className="min-h-screen px-6 py-10" style={{ backgroundColor: '#f9fafb' }}>
       <div className="max-w-2xl mx-auto">
-        <button onClick={() => navigate('/jobs')}
-          className="flex items-center gap-2 text-xs text-gray-400 hover:text-teal-600 uppercase tracking-widest font-bold mb-10 transition-colors">
+
+        {/* Back / Exit */}
+        <button
+          onClick={step === STEP_FORM ? () => navigate('/jobs') : handleBack}
+          className="flex items-center gap-2 text-xs text-gray-400 hover:text-teal-600 uppercase tracking-widest font-bold mb-8 transition-colors">
           <svg viewBox="0 0 24 24" fill="none" className="w-4 h-4">
             <path d="M19 12H5M12 5l-7 7 7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
-          {t('apply.form.exit')}
+          {step === STEP_FORM ? f('exit') : f('back')}
         </button>
 
-        <div className="mb-8">
-          <p className="text-xs font-bold uppercase tracking-[0.25em] text-teal-600 mb-2">{t('apply.form.label')}</p>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 uppercase tracking-tight mb-1">
-            {selectedPosition}
-          </h1>
-          <p className="text-gray-400 text-sm">{t('apply.form.subtitle')}</p>
+        {/* Progress bar */}
+        <div className="flex items-center gap-2 mb-8">
+          {stepLabels.map((label, i) => {
+            const n = i + 1
+            const active = currentStep === n
+            const done   = currentStep > n
+            return (
+              <div key={label} className="flex items-center gap-2 flex-1">
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold transition-colors ${
+                    done || active ? 'bg-teal-600 text-white' : 'bg-gray-200 text-gray-400'
+                  }`}>
+                    {done
+                      ? <svg viewBox="0 0 24 24" fill="none" className="w-3 h-3"><path d="M5 13l4 4L19 7" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                      : n
+                    }
+                  </div>
+                  <span className={`text-xs font-bold uppercase tracking-wider hidden sm:block ${
+                    active ? 'text-teal-600' : done ? 'text-gray-400' : 'text-gray-300'
+                  }`}>
+                    {label}
+                  </span>
+                </div>
+                {i < 2 && <div className={`flex-1 h-px ${currentStep > n ? 'bg-teal-600' : 'bg-gray-200'}`} />}
+              </div>
+            )
+          })}
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 shadow-sm">
-          <form onSubmit={handleSubmit} noValidate encType="multipart/form-data" className="space-y-5">
+        {/* Header */}
+        <div className="mb-6">
+          <p className="text-xs font-bold uppercase tracking-[0.25em] text-teal-600 mb-2">{f('label')}</p>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 uppercase tracking-tight mb-1">
+            {step === STEP_FORM    ? f('stepPersonal')
+             : step === STEP_RESUME ? f('stepResume')
+             : f('stepPreview')}
+          </h1>
+          <p className="text-gray-400 text-sm">
+            {step === STEP_FORM    ? f('subtitle')
+             : step === STEP_RESUME ? f('resumeSubtitle')
+             : f('previewSubtitle')}
+          </p>
+        </div>
+
+        {/* ── STEP 1: Personal Info ── */}
+        {step === STEP_FORM && (
+          <div className="bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 shadow-sm space-y-5">
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>
                 <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
-                  {t('apply.form.firstName')} <span className="text-red-400">{t('apply.form.required')}</span>
+                  {f('firstName')} <span className="text-red-400">*</span>
                 </label>
                 <input name="first_name" value={fields.first_name} onChange={handleChange}
-                  placeholder={t('apply.form.placeholderFirst')} className={inputClass('first_name')} />
+                  placeholder={f('placeholderFirst')} className={inputClass('first_name')} />
                 <FieldError message={errors.first_name} />
               </div>
               <div>
                 <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
-                  {t('apply.form.lastName')} <span className="text-red-400">{t('apply.form.required')}</span>
+                  {f('lastName')} <span className="text-red-400">*</span>
                 </label>
                 <input name="last_name" value={fields.last_name} onChange={handleChange}
-                  placeholder={t('apply.form.placeholderLast')} className={inputClass('last_name')} />
+                  placeholder={f('placeholderLast')} className={inputClass('last_name')} />
                 <FieldError message={errors.last_name} />
               </div>
             </div>
@@ -172,25 +317,25 @@ export default function ApplyForm() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>
                 <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
-                  {t('apply.form.phone')} <span className="text-red-400">{t('apply.form.required')}</span>
+                  {f('phone')} <span className="text-red-400">*</span>
                 </label>
                 <input name="phone" type="tel" value={fields.phone} onChange={handleChange}
-                  placeholder={t('apply.form.placeholderPhone')} className={inputClass('phone')} />
+                  placeholder={f('placeholderPhone')} className={inputClass('phone')} />
                 <FieldError message={errors.phone} />
               </div>
               <div>
                 <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
-                  {t('apply.form.email')} <span className="text-red-400">{t('apply.form.required')}</span>
+                  {f('email')} <span className="text-red-400">*</span>
                 </label>
                 <input name="email" type="email" value={fields.email} onChange={handleChange}
-                  placeholder={t('apply.form.placeholderEmail')} className={inputClass('email')} />
+                  placeholder={f('placeholderEmail')} className={inputClass('email')} />
                 <FieldError message={errors.email} />
               </div>
             </div>
 
             <div>
               <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
-                {t('apply.form.position')} <span className="text-red-400">{t('apply.form.required')}</span>
+                {f('position')} <span className="text-red-400">*</span>
               </label>
               <select name="position" value={selectedPosition} onChange={(e) => setSelectedPosition(e.target.value)}
                 className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-teal-600 transition">
@@ -202,67 +347,264 @@ export default function ApplyForm() {
 
             <div>
               <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
-                {t('apply.form.experience')}
+                {f('experience')}
               </label>
               <select name="experience" value={fields.experience} onChange={handleChange}
                 className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-teal-600 transition">
-                <option value="">{t('apply.form.expPlaceholder')}</option>
-                <option value="none">{t('apply.form.expNone')}</option>
-                <option value="less_than_1">{t('apply.form.expLess1')}</option>
-                <option value="1_to_3">{t('apply.form.exp1to3')}</option>
-                <option value="3_to_5">{t('apply.form.exp3to5')}</option>
-                <option value="5_plus">{t('apply.form.exp5plus')}</option>
+                <option value="">{f('expPlaceholder')}</option>
+                <option value="No experience — willing to train">{f('expNone')}</option>
+                <option value="Less than 1 year">{f('expLess1')}</option>
+                <option value="1 – 3 years">{f('exp1to3')}</option>
+                <option value="3 – 5 years">{f('exp3to5')}</option>
+                <option value="5+ years">{f('exp5plus')}</option>
               </select>
             </div>
 
             <div>
               <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
-                {t('apply.form.employer')}{' '}
-                <span className="text-gray-300 font-normal normal-case tracking-normal">({t('apply.form.optional')})</span>
+                {f('employer')}{' '}
+                <span className="text-gray-300 font-normal normal-case tracking-normal">({f('optional')})</span>
               </label>
               <input name="previous_employer" value={fields.previous_employer} onChange={handleChange}
-                placeholder={t('apply.form.placeholderEmployer')} className={inputClass('previous_employer')} />
+                placeholder={f('placeholderEmployer')} className={inputClass('previous_employer')} />
             </div>
 
             <div>
               <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
-                {t('apply.form.intro')}{' '}
-                <span className="text-gray-300 font-normal normal-case tracking-normal">({t('apply.form.optional')})</span>
+                {f('intro')}{' '}
+                <span className="text-gray-300 font-normal normal-case tracking-normal">({f('optional')})</span>
               </label>
               <textarea name="intro" value={fields.intro} onChange={handleChange} rows={4}
-                placeholder={t('apply.form.placeholderIntro')}
+                placeholder={f('placeholderIntro')}
                 className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-teal-600 transition" />
             </div>
 
-            <div>
-              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
-                {t('apply.form.resume')} <span className="text-red-400">{t('apply.form.required')}</span>
-              </label>
-              <label className={`flex items-center justify-center gap-3 w-full border-2 border-dashed rounded-lg px-4 py-6 cursor-pointer transition-colors ${
-                errors.resume ? 'border-red-400 bg-red-50' : fileName ? 'border-teal-400' : 'border-gray-300 hover:border-teal-500'
-              }`} style={{ backgroundColor: fileName && !errors.resume ? '#f0fdf8' : undefined }}>
-                <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5 text-gray-400 flex-shrink-0">
-                  <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1M12 12V4m0 0L8 8m4-4l4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-                <span className="text-sm text-gray-500">
-                  {fileName
-                    ? <span className="text-teal-600 font-semibold">{fileName}</span>
-                    : <span>{t('apply.form.uploadLabel')} <span className="text-gray-400 text-xs">{t('apply.form.uploadHint')}</span></span>
-                  }
-                </span>
-                <input type="file" name="resume" accept=".pdf,.doc,.docx" className="hidden" onChange={handleFileChange} />
-              </label>
-              <FieldError message={fileError || errors.resume} />
+            <button type="button" onClick={handleNextToResume}
+              className="w-full bg-[#0f766e] hover:bg-[#0d6460] text-white text-xs font-bold py-3.5 uppercase tracking-widest transition-colors duration-200 rounded-lg mt-2">
+              {f('continueToResume')}
+            </button>
+          </div>
+        )}
+
+        {/* ── STEP 2: Resume Builder ── */}
+        {step === STEP_RESUME && (
+          <div className="space-y-6">
+
+            {/* Skills */}
+            <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
+              <h3 className="text-xs font-bold uppercase tracking-widest text-gray-700 mb-4">
+                {f('sectionSkills')} <span className="text-red-400">*</span>
+              </h3>
+              <div className="flex gap-2 mb-3">
+                <input
+                  value={skillInput}
+                  onChange={e => setSkillInput(e.target.value)}
+                  onKeyDown={handleSkillKey}
+                  placeholder={f('skillPlaceholder')}
+                  className={miniInputClass}
+                />
+                <button type="button" onClick={addSkill}
+                  className="flex-shrink-0 bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold px-4 rounded-lg transition-colors">
+                  {f('skillAdd')}
+                </button>
+              </div>
+              {skills.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {skills.map(s => (
+                    <span key={s} className="flex items-center gap-1.5 bg-teal-50 text-teal-700 text-xs font-semibold px-3 py-1.5 rounded-full border border-teal-200">
+                      {s}
+                      <button type="button" onClick={() => removeSkill(s)} className="text-teal-400 hover:text-teal-700 leading-none">×</button>
+                    </span>
+                  ))}
+                </div>
+              )}
+              <FieldError message={resumeErrors.skills} />
             </div>
 
-            <button type="submit" disabled={submitting}
-              className="w-full bg-[#0f766e] hover:bg-[#0d6460] disabled:opacity-60 disabled:cursor-not-allowed text-white text-xs font-bold py-3.5 uppercase tracking-widest transition-colors duration-200 rounded-lg mt-2">
-              {submitting ? t('apply.form.submitting') : t('apply.form.submit')}
+            {/* Education */}
+            <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
+              <h3 className="text-xs font-bold uppercase tracking-widest text-gray-700 mb-4">
+                {f('sectionEducation')} <span className="text-red-400">*</span>
+              </h3>
+              <div className="space-y-4">
+                {education.map((row, i) => (
+                  <div key={i} className="grid grid-cols-1 sm:grid-cols-3 gap-3 relative">
+                    <input value={row.school} onChange={e => updateEducation(i, 'school', e.target.value)}
+                      placeholder={f('eduSchool')} className={miniInputClass} />
+                    <input value={row.course} onChange={e => updateEducation(i, 'course', e.target.value)}
+                      placeholder={f('eduCourse')} className={miniInputClass} />
+                    <div className="flex gap-2">
+                      <input value={row.year} onChange={e => updateEducation(i, 'year', e.target.value)}
+                        placeholder={f('eduYear')} className={miniInputClass} />
+                      {education.length > 1 && (
+                        <button type="button" onClick={() => removeEducation(i)}
+                          className="flex-shrink-0 text-gray-300 hover:text-red-400 text-lg leading-none transition-colors">×</button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <FieldError message={resumeErrors.education} />
+              <button type="button" onClick={addEducation}
+                className="mt-3 text-xs text-teal-600 hover:text-teal-800 font-bold uppercase tracking-wider transition-colors">
+                {f('skillAddAnother')}
+              </button>
+            </div>
+
+            {/* Work Experience */}
+            <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
+              <h3 className="text-xs font-bold uppercase tracking-widest text-gray-700 mb-1">{f('sectionWorkExp')}</h3>
+              <p className="text-gray-400 text-xs mb-4">{f('workOptionalNote')}</p>
+              <div className="space-y-4">
+                {workExp.map((row, i) => (
+                  <div key={i} className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <input value={row.company} onChange={e => updateWork(i, 'company', e.target.value)}
+                      placeholder={f('workCompany')} className={miniInputClass} />
+                    <input value={row.role} onChange={e => updateWork(i, 'role', e.target.value)}
+                      placeholder={f('workRole')} className={miniInputClass} />
+                    <div className="flex gap-2">
+                      <input value={row.duration} onChange={e => updateWork(i, 'duration', e.target.value)}
+                        placeholder={f('workDuration')} className={miniInputClass} />
+                      {workExp.length > 1 && (
+                        <button type="button" onClick={() => removeWork(i)}
+                          className="flex-shrink-0 text-gray-300 hover:text-red-400 text-lg leading-none transition-colors">×</button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <button type="button" onClick={addWork}
+                className="mt-3 text-xs text-teal-600 hover:text-teal-800 font-bold uppercase tracking-wider transition-colors">
+                {f('skillAddAnother')}
+              </button>
+            </div>
+
+            {/* Certifications */}
+            <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
+              <h3 className="text-xs font-bold uppercase tracking-widest text-gray-700 mb-1">{f('sectionCerts')}</h3>
+              <p className="text-gray-400 text-xs mb-4">{f('certsOptionalNote')}</p>
+              <textarea value={certifications} onChange={e => setCertifications(e.target.value)} rows={3}
+                placeholder={f('certPlaceholder')}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-teal-600 transition" />
+            </div>
+
+            <button type="button" onClick={handleNextToPreview}
+              className="w-full bg-[#0f766e] hover:bg-[#0d6460] text-white text-xs font-bold py-3.5 uppercase tracking-widest transition-colors duration-200 rounded-lg">
+              {f('continueToPreview')}
+            </button>
+          </div>
+        )}
+
+        {/* ── STEP 3: Preview ── */}
+        {step === STEP_PREVIEW && (
+          <div className="space-y-6">
+
+            {/* Resume Card */}
+            <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+
+              {/* Header */}
+              <div style={{ backgroundColor: '#0f766e' }} className="px-8 py-6">
+                <h2 className="text-white text-2xl font-extrabold uppercase tracking-tight">
+                  {fields.first_name} {fields.last_name}
+                </h2>
+                <p className="text-teal-200 text-sm mt-1">{selectedPosition}</p>
+                <div className="flex flex-wrap gap-4 mt-3 text-teal-100 text-xs">
+                  <span>📞 {fields.phone}</span>
+                  <span>✉️ {fields.email}</span>
+                </div>
+              </div>
+
+              <div className="p-8 space-y-6">
+
+                {/* About */}
+                {fields.intro && (
+                  <div>
+                    <h3 className="text-xs font-bold uppercase tracking-widest text-teal-600 mb-2 pb-1 border-b border-gray-100">{f('previewAbout')}</h3>
+                    <p className="text-gray-600 text-sm leading-relaxed">{fields.intro}</p>
+                  </div>
+                )}
+
+                {/* Skills */}
+                <div>
+                  <h3 className="text-xs font-bold uppercase tracking-widest text-teal-600 mb-2 pb-1 border-b border-gray-100">{f('sectionSkills')}</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {skills.map(s => (
+                      <span key={s} className="bg-teal-50 text-teal-700 text-xs font-semibold px-3 py-1 rounded-full border border-teal-100">{s}</span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Education */}
+                <div>
+                  <h3 className="text-xs font-bold uppercase tracking-widest text-teal-600 mb-2 pb-1 border-b border-gray-100">{f('sectionEducation')}</h3>
+                  <div className="space-y-2">
+                    {education.filter(e => e.school.trim()).map((e, i) => (
+                      <div key={i} className="flex justify-between items-start">
+                        <div>
+                          <p className="text-sm font-semibold text-gray-800">{e.course}</p>
+                          <p className="text-xs text-gray-500">{e.school}</p>
+                        </div>
+                        <span className="text-xs text-gray-400 flex-shrink-0 ml-4">{e.year}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Work Experience */}
+                {workExp.some(w => w.company.trim()) && (
+                  <div>
+                    <h3 className="text-xs font-bold uppercase tracking-widest text-teal-600 mb-2 pb-1 border-b border-gray-100">{f('sectionWorkExp')}</h3>
+                    <div className="space-y-2">
+                      {workExp.filter(w => w.company.trim()).map((w, i) => (
+                        <div key={i} className="flex justify-between items-start">
+                          <div>
+                            <p className="text-sm font-semibold text-gray-800">{w.role}</p>
+                            <p className="text-xs text-gray-500">{w.company}</p>
+                          </div>
+                          <span className="text-xs text-gray-400 flex-shrink-0 ml-4">{w.duration}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Certifications */}
+                {certifications.trim() && (
+                  <div>
+                    <h3 className="text-xs font-bold uppercase tracking-widest text-teal-600 mb-2 pb-1 border-b border-gray-100">{f('sectionCerts')}</h3>
+                    <p className="text-gray-600 text-sm leading-relaxed">{certifications}</p>
+                  </div>
+                )}
+
+                {/* Experience Level */}
+                {fields.experience && (
+                  <div>
+                    <h3 className="text-xs font-bold uppercase tracking-widest text-teal-600 mb-2 pb-1 border-b border-gray-100">{f('experience')}</h3>
+                    <p className="text-gray-600 text-sm">{fields.experience}</p>
+                  </div>
+                )}
+
+                {/* Previous Employer */}
+                {fields.previous_employer && (
+                  <div>
+                    <h3 className="text-xs font-bold uppercase tracking-widest text-teal-600 mb-2 pb-1 border-b border-gray-100">{f('employer')}</h3>
+                    <p className="text-gray-600 text-sm">{fields.previous_employer}</p>
+                  </div>
+                )}
+
+              </div>
+            </div>
+
+            {/* Submit */}
+            <button type="button" onClick={handleSubmit} disabled={submitting}
+              className="w-full bg-[#0f766e] hover:bg-[#0d6460] disabled:opacity-60 disabled:cursor-not-allowed text-white text-xs font-bold py-3.5 uppercase tracking-widest transition-colors duration-200 rounded-lg">
+              {submitting ? f('submitting') : f('submit')}
             </button>
 
-            <p className="text-center text-gray-400 text-xs">{t('apply.form.consent')}</p>
-          </form>
-        </div>
+            <p className="text-center text-gray-400 text-xs">{f('consent')}</p>
+          </div>
+        )}
+
       </div>
     </div>
   )
